@@ -9,7 +9,54 @@ from difflib import SequenceMatcher
 from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 import tkinter as tk
+import requests
+import json
+import time
+import ollama
 from tkinter import filedialog, messagebox
+
+
+
+# --- CONFIGURACIÓN DE LA INYECCIÓN IA (OLLAMA) ---
+# Asegúrate de correr en terminal: ollama run Llama-3.2-1B-Instruct-f16.gguf (o el nombre que tengas)
+OLLAMA_URL = "http://localhost:11434/api/chat"
+MODELO_IA = "llama-3.2-1b-instruct-f16.gguf" # <--- CAMBIA ESTO POR EL NOMBRE EXACTO QUE TENGAS EN 'ollama list'
+
+def consultar_cerebro_ollama(texto_denuncia, fecha_radicacion, base_conocimiento=None):
+    """
+    Función corregida: La IA ahora CONTEXTUALIZA y ENRIQUECE el texto, no decide.
+    Genera una descripción técnica que activa las reglas del sistema.
+    """
+    
+    # Prompt diseñado para "traducir" lenguaje natural a lenguaje técnico de auditoría
+    system_prompt = f"""Eres un asistente experto en auditoría tributaria y aduanera de la DIAN.
+    Tu tarea NO es clasificar, sino CONTEXTUALIZAR y ENRIQUECER los hechos denunciados.
+    
+    INSTRUCCIONES:
+    1. Lee los hechos denunciados (que pueden ser informales).
+    2. Reescribe la situación usando terminología técnica oficial (Estatuto Tributario/Aduanero).
+    3. INCLUYE explícitamente palabras clave técnicas (ej: "Omisión de ingresos", "Facturación", "RUT", "Contrabando", "IVA", "Activos omitidos") si el contexto lo sugiere.
+    4. Si hay fechas relativas (ej: "año pasado"), calcúlalas basándote en la Fecha de Radicación: {fecha_radicacion}.
+    
+    Ejemplo Entrada: "El señor trae ropa de usa y la vende en el local sin papeles"
+    Ejemplo Salida: "Presunta introducción de mercancía (ropa) del exterior sin documentos de amparo legal (Contrabando). Comercialización de mercancía de procedencia extranjera sin factura ni soportes (Omisión de ingresos/IVA)."
+
+    RESPONDE ÚNICAMENTE CON EL TEXTO TÉCNICO ENRIQUECIDO.
+    """
+    
+    try:
+        payload = {
+            "model": MODELO_IA,
+            "messages": [{"role": "system", "content": system_prompt}, {"role": "user", "content": texto_denuncia}],
+            "stream": False,
+            "temperature": 0.1 # Creatividad baja para ser preciso
+        }
+        # Timeout un poco más alto para permitir redacción
+        response = requests.post(OLLAMA_URL, json=payload, timeout=20)
+        content = response.json()['message']['content']
+        return content.strip() # Devolvemos solo texto
+    except:
+        return ""
 
 
 # Se elimina la importación de xlsxwriter para evitar el error de ModuleNotFoundError
@@ -1928,6 +1975,43 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
 
         # Estas columnas serán añadidas al DataFrame de salida
         df['Prioritaria'] = ''
+        
+        # --- BLOQUE INYECCIÓN 1: CONSTRUCCION DE CONOCIMIENTO ---
+        conocimiento_ia = [] # Lista enriquecida para la IA
+        mapa_reglas_completo = {} 
+    
+        for regimen, contenido in reglas_conclusion.items():
+            for clave, detalles in contenido['reglas'].items():
+                nombre_conducta = detalles['Conducta Sancionable']
+                
+                # Recopilamos todas las pistas textuales para dar contexto a la IA
+                pistas = []
+                
+                # 1. Extraer de Palabras Clave...
+                if 'palabras_clave' in detalles:
+                    for item in detalles['palabras_clave']:
+                        if isinstance(item, set):
+                            pistas.extend(list(item))
+                        elif isinstance(item, str):
+                            pistas.append(item)
+                
+                # 2. Extraer de Determinantes...
+                for tipo in ['palabras_determinantes', 'palabras_contexto', 'palabras_refuerzo']:
+                    if tipo in detalles:
+                        pistas.extend(detalles[tipo])
+                
+                # Crear objeto de regla para la IA
+                regla_info = {
+                    "Conducta": nombre_conducta,
+                    "Regimen": regimen,
+                    "Pistas_Clave": list(set(pistas))[:25] 
+                }
+                conocimiento_ia.append(regla_info)
+                
+                # Guardamos referencia
+                mapa_reglas_completo[nombre_conducta] = {**detalles, 'Regimen': regimen}
+    
+        
         df['Año de Investigación'] = ''
         df['Conclusión'] = ''
         df['Auditor'] = '' # Nueva columna para el nombre del auditor
@@ -1940,8 +2024,17 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         df['Fecha Firmeza'] = '' # Nueva columna Fecha Firmeza
 
 
-        # Itera sobre cada fila del DataFrame para procesar cada denuncia
-        for index, row in df.iterrows():
+        total_filas = len(df)
+        print(f"Iniciando procesamiento de {total_filas} registros...")
+
+        # Itera sobre cada fila del DataFrame (Usamos enumerate para contar el progreso 'i')
+        for i, (index, row) in enumerate(df.iterrows()):
+            
+            #Mostrar porcentaje de progreso en tiempo real ---
+            porcentaje = ((i + 1) / total_filas) * 100
+            # end='\r' permite sobrescribir la línea actual de la consola
+            print(f"\rProcesando: {porcentaje:.1f}% ({i + 1}/{total_filas})", end='', flush=True)
+
             descripcion_hechos = str(row.get('Descripción de los Hechos', ''))
             
             # Intentar parsear la Fecha Radicación para usar su año base
@@ -2019,6 +2112,42 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
 
             anho_investigacion = ', '.join(sorted(list(anho_valido))) if anho_valido else 'No determinado'
 
+            # --- BLOQUE INYECCIÓN 2: CEREBRO IA ---
+            # Solo activamos la IA si las reglas fallaron en el año o para validar
+            fecha_rad_str = str(row.get('Fecha Radicación', ''))
+            
+            # Ejecutamos la consulta a Ollama
+            respuesta_ia = consultar_cerebro_ollama(descripcion_hechos, fecha_rad_str, conocimiento_ia)
+            
+            if respuesta_ia:
+                # A. MEJORA DEL AÑO DE INVESTIGACIÓN
+                # Si las reglas no vieron el año (ej: "año pasado") y la IA sí:
+                anio_ia = str(respuesta_ia.get('anio_investigacion', ''))
+                if (anho_investigacion == 'No determinado' or not anho_investigacion) and anio_ia.isdigit():
+                    anho_investigacion = anio_ia
+                    # Recalculamos prioridad con el dato de la IA
+                    if int(anio_ia) <= (datetime.now().year - 2):
+                        prioridad = 'Si'
+
+                # B. SOPORTE A LA CLASIFICACIÓN
+                # Si la IA tiene confianza ALTA y detectó una conducta válida
+                conducta_ia = respuesta_ia.get('conducta_detectada')
+                
+                if conducta_ia in mapa_reglas_completo:
+                    detalles_ia = mapa_reglas_completo[conducta_ia]
+                    
+                    # Inyectamos este hallazgo como si fuera un "match" de regla perfecta (Puntaje 999)
+                    # Esto asegura que entre en tu lógica de priorización y formato existente
+                    matches_con_puntaje.append({
+                        'Puntaje': 999, # Forzamos prioridad máxima
+                        'Regimen': detalles_ia['Regimen'],
+                        'Conducta': detalles_ia['Conducta'],
+                        'Conducta Sancionable': detalles_ia['Conducta Sancionable'],
+                        'Impuesto / Infracción': detalles_ia['Impuesto / Infracción'],
+                        'Normatividad': detalles_ia.get('Normatividad', 'N/A'),
+                        'Puntos de Auditoria': detalles_ia.get('Puntos de Auditoria', 'N/A')
+                    })
+
             # Lógica para determinar si la denuncia es prioritaria
             prioridad = 'No'
             if anho_valido:
@@ -2039,8 +2168,23 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
             # Convierte 'no facturo' -> 'no FACTURA', 'compra ilegal' -> 'COMPRA CONTRABANDO'
             descripcion_lematizada = lematizar_artesanal(descripcion_normalizada)
 
-            # Usaremos la descripción lematizada para las búsquedas a partir de ahora
-            texto_para_analisis = descripcion_lematizada 
+            # La IA analiza primero para "preparar el terreno" a las reglas.
+            # Usamos la descripción original para que la IA tenga todo el contexto semántico.
+            fecha_rad_str = str(row.get('Fecha Radicación', ''))
+            
+            # Llamamos a la IA para que nos de la "Traducción Técnica"
+            # (Nota: Esto puede tomar tiempo por fila. Si es muy lento, podrías condicionarlo)
+            contexto_tecnico_ia = consultar_cerebro_ollama(descripcion_hechos, fecha_rad_str)
+            
+            # Normalizamos y lematizamos lo que dijo la IA
+            contexto_ia_procesado = lematizar_artesanal(normalizar_texto(contexto_tecnico_ia))
+            
+            # FUSIÓN: El texto que analizarán las reglas es la suma de:
+            # Lo que dijo el usuario + La interpretación técnica de la IA
+            texto_para_analisis = descripcion_lematizada + " " + contexto_ia_procesado
+            
+            # Guardamos el aporte de la IA en una columna (opcional, para auditar)
+            # df.at[index, 'Analisis_IA'] = contexto_tecnico_ia 
 
             matches_con_puntaje = []
 
@@ -2486,9 +2630,13 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
                 df.at[index, 'Conclusión'] = conclusion_final
             else:
                 df.at[index, 'Conclusión'] = "No se encontraron infracciones clasificables."
+
+                print("") # <---LÍNEA PARA LIMPIAR EL CONTADOR DE PROGRESO
         
         # --- Reparto de Denuncias entre Auditores ---
         # Se guarda el df original (antes de reordenar) en df_original_index para mapear la asignación
+        
+        
         df_asignaciones, auditor_asignado_serie = repartir_denuncias(df.copy(), AUDITORES)
         
         # Asignar la columna 'Auditor' al DataFrame principal (df)
