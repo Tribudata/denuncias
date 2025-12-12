@@ -22,40 +22,52 @@ from tkinter import filedialog, messagebox
 OLLAMA_URL = "http://localhost:11434/api/chat"
 MODELO_IA = "llama-3.2-1b-instruct-f16.gguf" # <--- CAMBIA ESTO POR EL NOMBRE EXACTO QUE TENGAS EN 'ollama list'
 
-def consultar_cerebro_ollama(texto_denuncia, fecha_radicacion, base_conocimiento=None):
+def consultar_cerebro_ollama(texto_denuncia, fecha_radicacion):
     """
-    Función corregida: La IA ahora CONTEXTUALIZA y ENRIQUECE el texto, no decide.
-    Genera una descripción técnica que activa las reglas del sistema.
+    La IA SOLO contextualiza y enriquece el texto, NO clasifica.
+    Traduce lenguaje coloquial a lenguaje técnico de auditoría.
     """
     
-    # Prompt diseñado para "traducir" lenguaje natural a lenguaje técnico de auditoría
-    system_prompt = f"""Eres un asistente experto en auditoría tributaria y aduanera de la DIAN.
-    Tu tarea NO es clasificar, sino CONTEXTUALIZAR y ENRIQUECER los hechos denunciados.
-    
-    INSTRUCCIONES:
-    1. Lee los hechos denunciados (que pueden ser informales).
-    2. Reescribe la situación usando terminología técnica oficial (Estatuto Tributario/Aduanero).
-    3. INCLUYE explícitamente palabras clave técnicas (ej: "Omisión de ingresos", "Facturación", "RUT", "Contrabando", "IVA", "Activos omitidos") si el contexto lo sugiere.
-    4. Si hay fechas relativas (ej: "año pasado"), calcúlalas basándote en la Fecha de Radicación: {fecha_radicacion}.
-    
-    Ejemplo Entrada: "El señor trae ropa de usa y la vende en el local sin papeles"
-    Ejemplo Salida: "Presunta introducción de mercancía (ropa) del exterior sin documentos de amparo legal (Contrabando). Comercialización de mercancía de procedencia extranjera sin factura ni soportes (Omisión de ingresos/IVA)."
+    system_prompt = f"""Eres un traductor especializado en auditoría tributaria y aduanera.
 
-    RESPONDE ÚNICAMENTE CON EL TEXTO TÉCNICO ENRIQUECIDO.
-    """
+Tu ÚNICA tarea es reescribir el texto del usuario usando terminología técnica oficial.
+
+REGLAS ESTRICTAS:
+1. NO digas qué conducta sancionable es.
+2. NO menciones artículos o normatividad.
+3. SOLO reescribe los hechos usando palabras técnicas precisas.
+4. Si hay fechas relativas (ej: "el año pasado"), conviértelas a años específicos basándote en: {fecha_radicacion}
+
+VOCABULARIO TÉCNICO A USAR (cuando aplique):
+- "No da recibos" → "No expide factura electrónica"
+- "Trae cosas de afuera" → "Importa mercancía del exterior"
+- "No paga nada" → "Omite la declaración y pago de impuestos"
+- "Tiene plata escondida" → "Posee activos no declarados"
+- "Compra sin papeles" → "Adquiere sin documentación soporte"
+- "Vende sin registrar" → "Comercializa sin registro contable"
+
+EJEMPLO:
+Entrada: "El man trae ropa de usa y la vende en el local sin dar factura desde el 2022"
+Salida: "Importa mercancía (ropa) del exterior y la comercializa sin expedir factura electrónica desde el año 2022. Posiblemente omite declaración de ingresos por ventas no facturadas."
+
+RESPONDE ÚNICAMENTE CON EL TEXTO REESCRITO."""
     
     try:
         payload = {
             "model": MODELO_IA,
-            "messages": [{"role": "system", "content": system_prompt}, {"role": "user", "content": texto_denuncia}],
+            "messages": [
+                {"role": "system", "content": system_prompt}, 
+                {"role": "user", "content": texto_denuncia}
+            ],
             "stream": False,
-            "temperature": 0.1 # Creatividad baja para ser preciso
+            "temperature": 0.1
         }
-        # Timeout un poco más alto para permitir redacción
+        
         response = requests.post(OLLAMA_URL, json=payload, timeout=20)
         content = response.json()['message']['content']
-        return content.strip() # Devolvemos solo texto
-    except:
+        return content.strip()
+    except Exception as e:
+        print(f"Advertencia: IA no disponible ({e}). Continuando sin enriquecimiento.")
         return ""
 
 
@@ -1976,19 +1988,10 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         # Estas columnas serán añadidas al DataFrame de salida
         df['Prioritaria'] = ''
         
-        # --- BLOQUE INYECCIÓN 1: CONSTRUCCION DE CONOCIMIENTO ---
-        conocimiento_ia = [] # Lista enriquecida para la IA
-        mapa_reglas_completo = {} 
-    
-        for regimen, contenido in reglas_conclusion.items():
-            for clave, detalles in contenido['reglas'].items():
-                nombre_conducta = detalles['Conducta Sancionable']
-                
-                # Recopilamos todas las pistas textuales para dar contexto a la IA
-                pistas = []
+       
                 
                 # 1. Extraer de Palabras Clave...
-                if 'palabras_clave' in detalles:
+        if 'palabras_clave' in detalles:
                     for item in detalles['palabras_clave']:
                         if isinstance(item, set):
                             pistas.extend(list(item))
@@ -1996,20 +1999,20 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
                             pistas.append(item)
                 
                 # 2. Extraer de Determinantes...
-                for tipo in ['palabras_determinantes', 'palabras_contexto', 'palabras_refuerzo']:
-                    if tipo in detalles:
+        for tipo in ['palabras_determinantes', 'palabras_contexto', 'palabras_refuerzo']:
+            if tipo in detalles:
                         pistas.extend(detalles[tipo])
                 
                 # Crear objeto de regla para la IA
-                regla_info = {
+            regla_info = {
                     "Conducta": nombre_conducta,
                     "Regimen": regimen,
                     "Pistas_Clave": list(set(pistas))[:25] 
                 }
-                conocimiento_ia.append(regla_info)
+            conocimiento_ia.append(regla_info)
                 
                 # Guardamos referencia
-                mapa_reglas_completo[nombre_conducta] = {**detalles, 'Regimen': regimen}
+            mapa_reglas_completo[nombre_conducta] = {**detalles, 'Regimen': regimen}
     
         
         df['Año de Investigación'] = ''
@@ -2113,11 +2116,15 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
             anho_investigacion = ', '.join(sorted(list(anho_valido))) if anho_valido else 'No determinado'
 
             # --- BLOQUE INYECCIÓN 2: CEREBRO IA ---
-            # Solo activamos la IA si las reglas fallaron en el año o para validar
             fecha_rad_str = str(row.get('Fecha Radicación', ''))
-            
-            # Ejecutamos la consulta a Ollama
-            respuesta_ia = consultar_cerebro_ollama(descripcion_hechos, fecha_rad_str, conocimiento_ia)
+
+            # Llamamos a la IA para que traduzca el lenguaje coloquial a técnico
+            contexto_tecnico_ia = consultar_cerebro_ollama(descripcion_hechos, fecha_rad_str)
+
+            # Normalizamos y lematizamos lo que dijo la IA
+            contexto_ia_procesado = ""
+            if contexto_tecnico_ia:
+                contexto_ia_procesado = lematizar_artesanal(normalizar_texto(contexto_tecnico_ia))
             
             if respuesta_ia:
                 # A. MEJORA DEL AÑO DE INVESTIGACIÓN
