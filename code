@@ -2556,44 +2556,95 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         # Columnas base que queremos en Priorización (mismas que Resultados)
         cols_priorizacion = df.columns.tolist() 
         
+        # Año actual para el cálculo de prioridad individual
+        # Si estamos en 2025, años <= 2023 son prioritarios.
+        anho_actual_sistema = datetime.now().year
+
         for _, row in df.iterrows():
-            anios_investigacion_str = str(row['Año de Investigación'])
+            # Obtener el valor original y asegurar que sea string limpio
+            val_anio = row['Año de Investigación']
+            anios_investigacion_str = str(val_anio).strip() if pd.notna(val_anio) else ""
+            
             doc_limpio = limpiar_identificacion(row.get('Documento Denunciado', ''))
             
-            # Determinar lista de años para desglosar
-            if anios_investigacion_str and anios_investigacion_str != 'No determinado':
-                lista_anios = [a.strip() for a in anios_investigacion_str.split(',')]
-            else:
-                # Si no hay años determinados, pasamos el registro tal cual (o con 'No determinado')
+            # --- Lógica robusta de separación de años ---
+            lista_anios = []
+            
+            # Validamos si es un valor que se deba dividir
+            if not anios_investigacion_str or anios_investigacion_str.lower() in ['no determinado', 'nan', 'none', '']:
+                # Si no hay año determinado, se deja una sola fila con el valor original
                 lista_anios = [anios_investigacion_str]
-                
+            else:
+                # Separar por comas eliminando espacios vacíos
+                # Esto convierte "2019, 2020, 2021" en ["2019", "2020", "2021"]
+                lista_anios = [a.strip() for a in anios_investigacion_str.split(',') if a.strip()]
+            
+            # Seguridad: Si la lista quedó vacía por algún motivo, poner el valor original
+            if not lista_anios:
+                lista_anios = [anios_investigacion_str]
+
+            # --- Generar una fila INDEPENDIENTE por cada año encontrado ---
             for anio_inv in lista_anios:
-                # Crear una copia de la fila base
-                nueva_fila = row.copy()
+                # Convertir a diccionario para crear una instancia totalmente nueva e independiente
+                nueva_fila = row.to_dict()
                 
-                # 1. Actualizar el Año de Investigación para que sea único en esta fila
+                # 1. SOBRESCRIBIR el Año de Investigación con el año individual
                 nueva_fila['Año de Investigación'] = anio_inv
                 
-                # 2. Calcular Beneficio ESPECÍFICO para este año
+                # 2. Recalcular PRIORIDAD para este año específico
+                # La prioridad global del caso puede ser 'Si', pero para un año reciente (ej. 2024) podría ser 'No'.
+                nueva_prioridad = 'No'
+                if anio_inv.isdigit():
+                    try:
+                        anio_num = int(anio_inv)
+                        # Regla: Si el año es 2 o más años anterior al actual, es prioritario
+                        if anio_num <= anho_actual_sistema - 2:
+                            nueva_prioridad = 'Si'
+                    except ValueError:
+                        pass # Si no es numérico, se queda en 'No'
+                
+                nueva_fila['Prioritaria'] = nueva_prioridad
+
+                # 3. Calcular Beneficio y Datos ESPECÍFICOS para este año puntual
                 ben_aud = 'NO'
                 anio_ben_aud = ''
                 firmeza = ''
+                dir_seccional = ''
                 
-                if doc_limpio and doc_limpio in beneficio_map:
-                    # Verificar si este año específico tiene beneficio
-                    if anio_inv in beneficio_map[doc_limpio]:
-                        data_anio = beneficio_map[doc_limpio][anio_inv]
+                if doc_limpio and beneficio_map and doc_limpio in beneficio_map:
+                    # Verificar si este año específico (anio_inv) tiene beneficio
+                    clave_anio = str(anio_inv).strip()
+                    
+                    if clave_anio in beneficio_map[doc_limpio]:
+                        data_anio = beneficio_map[doc_limpio][clave_anio]
+                        
                         ben_aud = 'SI'
                         anio_ben_aud = data_anio['texto']
                         firmeza = data_anio['firmeza']
+                        dir_seccional = data_anio.get('direccion', '') 
                 
+                # Asignar los valores específicos a la fila desagregada
                 nueva_fila['Beneficio Auditoria'] = ben_aud
                 nueva_fila['Año Beneficio Auditoria'] = anio_ben_aud
                 nueva_fila['Fecha Firmeza'] = firmeza
                 
+                # Limpiar dirección seccional si no hay beneficio en este año específico
+                if ben_aud == 'SI':
+                    nueva_fila['Dirección Seccional'] = dir_seccional
+                else:
+                    nueva_fila['Dirección Seccional'] = ''
+
                 filas_priorizacion.append(nueva_fila)
                 
-        df_priorizacion = pd.DataFrame(filas_priorizacion, columns=cols_priorizacion)
+        # Crear DataFrame final desde la lista de filas expandidas
+        df_priorizacion = pd.DataFrame(filas_priorizacion)
+        
+        # Asegurar que las columnas mantengan el orden correcto
+        # Si el DataFrame quedó vacío (caso raro), asegurarse de tener las columnas
+        if df_priorizacion.empty:
+             df_priorizacion = pd.DataFrame(columns=cols_priorizacion)
+        else:
+             df_priorizacion = df_priorizacion[cols_priorizacion]
                     
                     
         # --- Creación del DataFrame de Estadísticas (Hoja 'Estadísticas') ---
