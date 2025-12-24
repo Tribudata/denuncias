@@ -783,6 +783,79 @@ def identificar_patrones_investigacion(df):
     
     return df_investigacion
 
+    # =============================================================================
+# FRAGMENTO 1: BASE DE CONOCIMIENTO (DEFINICIONES)
+# =============================================================================
+
+# Definiciones extraídas de la Matriz de Lectura (Tributario, Aduanero, Cambiario)
+DEFINICIONES_CONDUCTAS = {
+    # --- TRIBUTARIO ---
+    'evade impuestos': "Realizar un conjunto de acciones ilegales y fraudulentas que buscan evitar la obligación formal y sustancial de declarar los diferentes impuestos, asi como ejecutar maniobras para bajar artificialmente la base imponible o ejecutar estrategias para pagar menos impuestos",
+    'extemporaneidad en la presentacion de las declaraciones': "Presentar una declaración tributaria (como Renta, IVA, Impuesto al Consumo o Retención en la Fuente) después de la fecha límite establecida en el calendario tributario.",
+    'no declara activos en el exterior': "Omitir la presentación de la declaración de activos en el exterior estando obligado a ello por poseer bienes fuera del país.",
+    'no declara impuesto al consumo': "No presentar la declaración y pago del Impuesto Nacional al Consumo por la prestación de servicios o venta de bienes específicos.",
+    'no declara impuesto al patrimonio': "Omitir la presentación de la declaración del Impuesto al Patrimonio, un gravamen que recae sobre el valor neto de los bienes y/o derechos de personas naturales.",
+    'no declara iva': "Omitir la presentación de la declaración de IVA ante la autoridad fiscal, aun cuando el contribuyente está inscrito en la responsabilidad correspondiente.",
+    'no declara regimen simple de tributacion': "Omitir la presentación de la declaración anual consolidada del Impuesto Unificado bajo el Régimen Simple de Tributación (SIMPLE).",
+    'no declara renta': "Omisión voluntaria o involuntaria de la obligación de presentar la declaración del impuesto sobre la renta y complementarios ante la autoridad tributaria.",
+    'no declara retencion en la fuente': "Incumplir el deber de presentar la declaración periódica de Retención en la Fuente estando obligado a hacerlo.",
+    'no efectua retencion en la fuente': "No aplicar o no practicar el descuento de impuestos (retención) que la ley exige realizar a un tercero al momento de un pago o abono en cuenta.",
+    'no paga impuesto de timbre': "Omitir la obligación de retener el impuesto que grava la suscripción de ciertos documentos o la realización de transacciones específicas.",
+    'no presenta informes precios de transferencia': "Omitir la presentación de la documentación, informes o declaraciones específicas requeridas a aquellos contribuyentes que realizan operaciones con vinculados.",
+    'inexacto': "Incluir datos falsos, incompletos o manipulados en las declaraciones tributarias o reportes de información.",
+    'cobra tarifas en iva diferentes': "Aplicar un porcentaje de Impuesto al Valor Agregado (IVA) a una venta o servicio que no corresponde con la tarifa oficial.",
+    'consigna ingresos propios en cuentas de terceros': "Utilizar cuentas bancarias de otras personas para depositar ingresos propios con la intención de ocultar el origen de los fondos.",
+    'dinero depositados en paraisos fiscales': "Transferir o mantener fondos en países o territorios que ofrecen regímenes fiscales de baja o nula imposición.",
+    'doble facturacion': "Expedir dos facturas por la venta de un mismo bien o servicio, de las cuales solo una es reportada oficialmente.",
+    'incluye costos no procedentes': "Deducir de la base gravable gastos que no cumplen con los requisitos legales, no tienen relación de causalidad o no están soportados.",
+    'incluye pasivos inexistentes': "Declarar deudas u obligaciones que no son reales o que ya han sido pagadas, con el fin de disminuir el patrimonio.",
+    'no declara retención en la fuente correctamente': "Declarar valores de retención en la fuente practicada que no coinciden con la realidad (bases, tarifas o montos inferiores).",
+    'no declara impuesto de timbre correctamente': "Consignar en la declaración valores del Impuesto de Timbre que no reflejan el monto real causado.",
+    'omite activos': "No incluir la totalidad de los bienes, derechos y recursos que posee una persona o empresa en su declaración de renta y patrimonio.",
+    'omite ingresos': "No declarar la totalidad de los ingresos o entradas de dinero obtenidas en un período fiscal.",
+    'costos o gastos originados con proveedor ficticio': "Incluir costos o gastos que provienen de transacciones con un proveedor inexistente, de fachada o insolvente.",
+    'retiene en la fuente a tarifas diferentes a las legales': "Aplicar a una transacción un porcentaje de retención que no es el que la ley establece.",
+    'solicita beneficios fiscales inexistentes': "Aplicar deducciones, exenciones o descuentos tributarios que no están vigentes o no aplican.",
+    'inexactitud declaracion ingresos y patrimonio': "Consignar en la declaración de Renta y Complementarios datos o cifras que no son verdaderas respecto a ingresos y patrimonio.",
+    'utiliza documentos presuntamente falsos': "Usar facturas, recibos o documentos no legítimos o alterados para soportar costos, gastos o impuestos.",
+    'no factura': "No expedir la factura de venta o documento equivalente para soportar una transacción económica.",
+    'factura sin requisitos': "Expedir facturas de venta que no cumplen con todos los requerimientos legales para su validez.",
+    'errores envio informacion exogena': "Incluir datos inconsistentes, incompletos o erróneos en los reportes anuales obligatorios (medios magnéticos).",
+    'inscrito en el regimen de iva que no corresponde': "Cumplir requisitos para ser responsable de IVA y no actualizar el RUT acorde a ello.",
+    'lleva doble contabilidad': "Mantener dos sistemas de registro contable, uno real interno y otro falso para autoridades fiscales.",
+    'no contabiliza todas sus operaciones': "Incumplir la obligación de registrar completa y verazmente la totalidad de las transacciones económicas.",
+    'no esta inscrito en el rut': "Incumplir la obligación formal de inscribirse en el Registro Unico Tributario.",
+    'reportado sin vinculo comercial en exogena por terceros': "Inconsistencia cuando un tercero reporta comercialmente a un contribuyente sin haber tenido relación real.",
+    'no expide certificados de retencion': "Omitir la obligación de entregar el documento que certifica el valor retenido a quien se le practicó la retención.",
+    'no lleva contabilidad': "No tener libros contables o mantenerlos incompletos o desactualizados.",
+    'proveedor ficticio': "Registrar operaciones con facturas de un proveedor que no existe o no realizó la venta.",
+    'solicita devoluciones improcedentes': "Solicitar devolución de saldos a favor que no corresponden o fueron generados irregularmente.",
+    'no reporta información exógena': "Omitir el deber de suministrar los reportes anuales o periódicos de información tributaria.",
+
+    # --- ADUANERO ---
+    'contrabando abierto': "Ingresar o sacar mercancías del territorio nacional de forma ilegal, evadiendo el control aduanero.",
+    'ejercer actividades aduaneras sin autorización ': "Realizar importación, exportación o trámites sin los permisos y licencias requeridos.",
+    'el valor declarado de la mercancia no corresponde': "Declarar un precio de mercancía inferior al real (sub-facturación) para disminuir impuestos.",
+    'errada clasificacion arancelaria': "Asignar un código arancelario incorrecto a la mercancía importada o exportada.",
+    'exportacion ficticia': "Simular una venta al exterior que no ocurre para obtener beneficios fiscales o aduaneros.",
+    'incumplimiento de requisitos previos': "No cumplir con permisos, registros o licencias obligatorios para importar o exportar.",
+    'incumplimiento de reglamentos tecnicos': "No cumplir con normas técnicas, etiquetado o reglamentos de seguridad de la mercancía.",
+    'suministrar informacion o documentacion inexacta o irregular': "Entregar documentos falsos o datos erróneos a la autoridad aduanera sobre la mercancía.",
+
+    # --- CAMBIARIO ---
+    'canalizar operaciones diferentes a las autorizadas': "Utilizar un canal cambiario autorizado para una operación distinta a la permitida.",
+    'ejercer actividades cambiarias sin autorización': "Manejo profesional de divisas (compra/venta) sin permiso o licencia.",
+    'extinguir operaciones de obligatoria canalizacion por medios diferentes a los autorizados': "Compensar obligaciones de comercio exterior o deuda usando mecanismos no autorizados.",
+    'no presentar o no transmitir al banco de la república las operaciones': "Omitir reportar al Banco Central las transacciones de divisas realizadas.",
+    'no presentar o no transmitir información exogena cambiaria a la dian': "Omitir reportar a la DIAN los datos detallados sobre operaciones de cambio.",
+    'pagar o recibir pagos a través del mercado no cambiario operaciones canalizables': "Usar mercado negro o canales informales para operaciones que exigen canal formal.",
+    'realizar operaciones de compra y venta de divisas sin autorizacion': "Transacciones de divisas fuera de los Intermediarios del Mercado Cambiario autorizados.",
+    'transmitir al banco de la república en forma extemporánea': "Reportar operaciones cambiarias al Banco de la República fuera de los plazos legales.",
+    'transmitir a la dian información exogena cambiaria en forma extemporánea': "Enviar información exógena cambiaria a la DIAN después de la fecha límite."
+}
+
+
+
 
 def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_beneficio):
     """
@@ -1926,6 +1999,24 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
     }
 }
 
+        # =============================================================================
+        # FRAGMENTO 2: INYECCIÓN DE DEFINICIONES (PREPARACIÓN)
+        # =============================================================================
+        # Recorremos la estructura de reglas para insertar la definición correspondiente
+        # solo si existe en nuestro diccionario maestro.
+    
+        for regimen_nom, data_reg in reglas_conclusion.items():
+            for conducta_key, regla_data in data_reg['reglas'].items():
+            # Normalizamos la clave para buscarla en el diccionario
+                clave_busqueda = conducta_key.lower().strip()
+            
+            # Insertamos la definición en la estructura de la regla
+            if clave_busqueda in DEFINICIONES_CONDUCTAS:
+                regla_data['definicion'] = DEFINICIONES_CONDUCTAS[clave_busqueda]
+            else:
+                regla_data['definicion'] = None # No hay definición disponible 
+
+
         # Estas columnas serán añadidas al DataFrame de salida
         df['Prioritaria'] = ''
         df['Año de Investigación'] = ''
@@ -2095,6 +2186,7 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
                         'patron_regex': 60,   # Estructura de frase completa (Máxima prioridad)
                         'determinantes': 50,  # Palabras fuertes (ej. "contrabando", "evasión")
                         'exacta': 40,         # Coincidencia exacta del título de la regla
+                        'definicion': 1,      # Peso base para la IA
                         'contexto': 15,       # Palabras de ámbito (ej. "mercancía", "impuesto")
                         'legacy': 10,         # Peso para tus listas antiguas 'palabras_clave'
                         'refuerzo': 5         # Palabras secundarias
@@ -2195,6 +2287,24 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
                                 puntaje_base += PESOS['patron_regex']
 
                     # --- FIN: Lógica de Puntuación Jerárquica ---
+
+
+                    # -----------------------------------------------------------------------------
+                    # CONDICIONAL DE IA: Solo se ejecuta si la bandera activar_ia es verdadera
+                    # -----------------------------------------------------------------------------
+                    if activar_ia and 'definicion' in clasificacion and clasificacion['definicion']:
+                        # Llamamos a la función que compara semánticamente la denuncia con la definición
+                        # (Asegúrate de tener la función calcular_puntaje_definicion definida arriba)
+                        puntos_ia = calcular_puntaje_definicion(texto_para_analisis, clasificacion['definicion'])
+                        
+                        # Sumamos al puntaje base
+                        puntaje_base += (puntos_ia * PESOS['definicion'])
+                        
+                        # Opcional: Debug para ver cuándo la IA está actuando
+                        # if puntos_ia > 0:
+                        #     print(f"   [IA Activa] {puntos_ia} puntos por similitud con definición de '{key}'")
+                    # -----------------------------------------------------------------------------
+
 
                     # --- CÁLCULO FINAL ---
                     # Solo considerar si hay alguna coincidencia base
