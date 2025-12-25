@@ -1012,44 +1012,50 @@ DEFINICIONES_CONDUCTAS = {
 
 def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_beneficio):
     """
-    Procesa un archivo de denuncias en formato Excel para determinar el año de investigación
-    y generar una conclusión preliminar basada en palabras clave. Además, genera una segunda
-    hoja con el código Python para estadísticas y hojas de reparto por auditor.
+    Procesa un archivo de denuncias en formato Excel.
     """
 
-    # BLOQUE DE PREGUNTA IA
+    # --- BLOQUE DE PREGUNTA IA (CORREGIDO) ---
+    print("DEBUG: Iniciando bloque de selección de IA...")
+    modelo_seleccionado = None
+    usar_ia = False
 
-    print("Iniciando selector de IA...")
     try:
-        # Creamos la raíz
+        # Creamos la raíz temporal
         root_selector = tk.Tk()
+        root_selector.withdraw() # Ocultar la ventana principal inmediatamente
         
-        # IMPORTANTE: No usar withdraw() inmediatamente si da problemas, 
-        # pero probemos withdraw() + update() que suele funcionar.
-        root_selector.withdraw()
-        root_selector.attributes('-topmost', True)
+        # Forzar actualización para que el sistema reconozca la ventana
+        root_selector.update()
         
-        # Esta línea es clave: procesa eventos pendientes antes de abrir la ventana hija
-        root_selector.update() 
-        
-        # Llamamos a la función
+        # Llamamos a la función de selección
         modelo_seleccionado = seleccionar_modelo_ia(root_selector)
         
-        root_selector.destroy()
+        # --- CORRECCIÓN CLAVE: Cerrar explícitamente el loop de eventos ---
+        root_selector.quit()   # Detiene el mainloop si estuviera corriendo
+        root_selector.destroy() # Destruye la ventana y libera recursos
+        # -----------------------------------------------------------------
         
         usar_ia = True if modelo_seleccionado else False
         
         if usar_ia:
             print(f"\n>>> MODO IA ACTIVADO: Modelo '{modelo_seleccionado}' <<<\n")
         else:
-            print("\n>>> MODO ESTÁNDAR: Ejecución sin IA <<<\n")
+            print("\n>>> MODO ESTÁNDAR: Ejecución sin IA (Usuario canceló o no seleccionó) <<<\n")
 
     except Exception as e:
-        print(f"Error CRÍTICO al abrir selector: {e}")
+        print(f"Error CRÍTICO al abrir selector (se continuará sin IA): {e}")
         usar_ia = False
         modelo_seleccionado = None
+        # Intentar destruir por seguridad si falló algo
+        try:
+            root_selector.destroy()
+        except:
+            pass
 
-        
+    print("DEBUG: Ventana IA cerrada correctamente. Continuando con la carga de variables...")
+    
+            
     
     # Definición de la estructura de auditores
     # El usuario debe reemplazar 'Auditor X' y 'Tributario' según sea necesario.
@@ -1216,16 +1222,18 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
                 print("ERROR: No se encontró la columna 'Documento Denunciado'.")
                 return
 
-        print(f"✅ EXITO: Datos cargados. Filas a procesar: {len(df)}")
+        print(f"✅ EXITO: Datos cargados. Filas a procesar: {len(df)}", flush=True)
+        print("DEBUG: Leyendo reglas de negocio (Espere un momento, no cierre la ventana)...", flush=True)
+
 
     except Exception as e:
-        print(f"❌ ERROR CRÍTICO AL LEER EL ARCHIVO: {e}")
+        print(f"❌ ERROR CRÍTICO AL LEER EL ARCHIVO: {e}", flush=True)
         return
+
+        print("DEBUG: Cargando reglas de negocio y sinónimos (Espere un momento)...", flush=True)
 
 
     
-
-
 
 
 
@@ -2197,47 +2205,30 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
     }
 }
 
-        # =============================================================================
-        # FRAGMENTO 2: INYECCIÓN DE DEFINICIONES (PREPARACIÓN)
-        # =============================================================================
-        # Recorremos la estructura de reglas para insertar la definición correspondiente
-        # solo si existe en nuestro diccionario maestro.
-    
-        for regimen_nom, data_reg in reglas_conclusion.items():
-            for conducta_key, regla_data in data_reg['reglas'].items():
-            # Normalizamos la clave para buscarla en el diccionario
-                clave_busqueda = conducta_key.lower().strip()
-            
-            # Insertamos la definición en la estructura de la regla
-            if clave_busqueda in DEFINICIONES_CONDUCTAS:
-                regla_data['definicion'] = DEFINICIONES_CONDUCTAS[clave_busqueda]
-            else:
-                regla_data['definicion'] = None # No hay definición disponible 
+        # --- CÓDIGO OPTIMIZADO PARA EVITAR BLOQUEOS ---
+        
+        print("DEBUG: Estructura de reglas lista. Creando columnas...", flush=True)
 
+        # 1. Crear columnas vacías rápidamente
+        columnas_nuevas = [
+            'Año de Investigación', 'Conclusión', 'Auditor', 'Normatividad', 
+            'Puntos de Auditoria', 'Lavado de Activos', 'Dirección Seccional', 
+            'Beneficio Auditoria', 'Año Beneficio Auditoria', 'Fecha Firmeza'
+        ]
+        for col in columnas_nuevas:
+            df[col] = ''
 
-        # Estas columnas serán añadidas al DataFrame de salida
-            
-        df['Año de Investigación'] = ''
-        df['Conclusión'] = ''
-        df['Auditor'] = '' # Nueva columna para el nombre del auditor
-        df['Normatividad'] = '' # Nueva columna para la Normatividad
-        df['Puntos de Auditoria'] = '' # Nueva columna para los Puntos de Auditoria
-        df['Lavado de Activos'] = ''  # Nueva columna lavado de activos
-        df['Dirección Seccional'] = '' # Nueva columna Dirección Seccional
-        df['Beneficio Auditoria'] = '' # Nueva columna Beneficio Auditoria
-        df['Año Beneficio Auditoria'] = '' # Nueva columna Año Beneficio Auditoria
-        df['Fecha Firmeza'] = '' # Nueva columna Fecha Firmeza
+        print(f"DEBUG: INICIANDO PROCESAMIENTO DE {len(df)} FILAS AHORA MISMO...", flush=True)
 
-
-    
-
-        print(f"Iniciando procesamiento de {len(df)} registros...")
-        if usar_ia: print("NOTA: El procesamiento con IA tomará más tiempo por el análisis semántico.")
-
-    # Itera sobre cada fila del DataFrame
+        # 2. Inicio del Bucle Principal
         for index, row in df.iterrows():
-        # Barra de progreso en consola
-            if index % 5 == 0: print(f"Procesando fila {index + 1} de {len(df)}...")
+            # Forzamos la salida en pantalla para confirmar vida
+            print(f"--> Procesando Fila {index + 1}...", flush=True)
+
+
+
+
+            
 
         descripcion_hechos = str(row.get('Descripción de los Hechos', ''))
         
