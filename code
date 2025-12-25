@@ -10,6 +10,11 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 import tkinter as tk
 from tkinter import filedialog, messagebox
+import tkinter.ttk as ttk # Para el selector de modelos
+try:
+    import ollama
+except ImportError:
+    ollama = None # Si no está instalado, definimos la variable como None para que no falle con NameError
 
 
 # Se elimina la importación de xlsxwriter para evitar el error de ModuleNotFoundError
@@ -549,6 +554,154 @@ plt.show()
     """
     return codigo
 
+
+
+def seleccionar_modelo_ia(root):
+    """
+    Versión corrección GUI: Fuerza la visibilidad de la ventana y debug.
+    """
+    print("DEBUG: Verificando librería ollama...")
+    if 'ollama' not in globals() or ollama is None:
+        print("DEBUG: Librería ollama no detectada.")
+        return None
+
+    modelos_disponibles = []
+    
+    # Intento de conexión con Timeout corto para no congelar
+    try:
+        print("DEBUG: Conectando a Ollama (127.0.0.1)...")
+        cliente = ollama.Client(host='http://127.0.0.1:11434')
+        respuesta = cliente.list()
+        
+        lista = respuesta.get('models', [])
+        for m in lista:
+            if isinstance(m, dict):
+                nombre = m.get('name', m.get('model', ''))
+                if nombre: modelos_disponibles.append(nombre)
+            else:
+                modelos_disponibles.append(str(m))
+        
+        print(f"DEBUG: Modelos encontrados: {len(modelos_disponibles)}")
+        
+    except Exception as e:
+        print(f"DEBUG: Error de conexión: {e}")
+        # Intento fallback
+        try:
+            lista = ollama.list().get('models', [])
+            for m in lista:
+                nombre = m.get('name', m.get('model', '')) if isinstance(m, dict) else str(m)
+                if nombre: modelos_disponibles.append(nombre)
+        except:
+            print("DEBUG: Falló intento secundario.")
+
+    if not modelos_disponibles:
+        # Usamos messagebox del sistema operativo directo si tkinter falla
+        print("DEBUG: Sin modelos. Abriendo alerta.")
+        messagebox.showwarning("Atención", "No se detectaron modelos en Ollama.")
+        return None
+
+    print("DEBUG: Creando ventana de selección...")
+    
+    # --- CAMBIOS CRÍTICOS DE VISIBILIDAD ---
+    ventana_ia = tk.Toplevel(root)
+    ventana_ia.title("Selección de Modelo IA")
+    ventana_ia.geometry("400x250")
+    
+    # 1. No usar transient (desvincula la visibilidad de la ventana oculta)
+    # ventana_ia.transient(root)  <-- COMENTADO/ELIMINADO
+    
+    # 2. Forzar al frente agresivamente
+    ventana_ia.attributes('-topmost', True) 
+    ventana_ia.lift()
+    ventana_ia.focus_force()
+    
+    # 3. Bloquear interacción con otras ventanas
+    ventana_ia.grab_set()
+    
+    seleccion = {"modelo": None}
+
+    tk.Label(ventana_ia, text="CONEXIÓN EXITOSA", fg="green", font=("Arial", 10, "bold")).pack(pady=10)
+    tk.Label(ventana_ia, text="Seleccione el modelo a utilizar:", font=("Arial", 11)).pack(pady=5)
+    
+    combo = ttk.Combobox(ventana_ia, values=modelos_disponibles, state="readonly", width=35)
+    combo.pack(pady=10)
+    if modelos_disponibles:
+        combo.current(0)
+
+    def confirmar():
+        seleccion["modelo"] = combo.get()
+        print(f"DEBUG: Usuario seleccionó {seleccion['modelo']}")
+        ventana_ia.destroy()
+
+    def cancelar():
+        print("DEBUG: Usuario canceló.")
+        seleccion["modelo"] = None
+        ventana_ia.destroy()
+
+    btn_frame = tk.Frame(ventana_ia)
+    btn_frame.pack(pady=20)
+
+    tk.Button(btn_frame, text="✅ EJECUTAR CON IA", command=confirmar, bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), padx=15, pady=5).pack(side=tk.LEFT, padx=10)
+    tk.Button(btn_frame, text="❌ SOLO CÓDIGO", command=cancelar, bg="#f44336", fg="white", font=("Arial", 10, "bold"), padx=15, pady=5).pack(side=tk.LEFT, padx=10)
+
+    print("DEBUG: Esperando interacción del usuario...")
+    
+    # 4. Actualizar la GUI antes de esperar
+    root.update()
+    root.wait_window(ventana_ia)
+    
+    return seleccion["modelo"]
+
+
+
+
+def consultar_contexto_ia(texto, modelo):
+    """
+    Envía el hecho denunciado a la IA para obtener contexto y años.
+    No decide, solo enriquece.
+    """
+    prompt = f"""
+    Actúa como un asistente experto en fiscalización tributaria y aduanera de Colombia. 
+    Tu tarea NO es juzgar, sino extraer contexto técnico y años implícitos para ayudar a un algoritmo de clasificación.
+    
+    Analiza el siguiente hecho denunciado: "{texto}"
+
+    1. Extrae términos técnicos clave que definan si es Tributario, Aduanero o Cambiario (Ej: "Omisión", "Contrabando", "Divisas").
+    2. Identifica todos los años fiscales mencionados explícita o implícitamente (Ej: "año pasado" si hoy es 2025 sería 2024).
+
+    Responde ESTRICTAMENTE con este formato:
+    CONTEXTO: [Palabras clave técnicas separadas por espacio]
+    AÑOS: [Año1, Año2, ...]
+    """
+    
+    try:
+        response = ollama.chat(model=modelo, messages=[
+            {'role': 'user', 'content': prompt},
+        ])
+        respuesta = response['message']['content']
+        
+        # Procesamiento simple de la respuesta
+        contexto_extra = ""
+        anios_extra = []
+        
+        lines = respuesta.split('\n')
+        for line in lines:
+            if "CONTEXTO:" in line.upper():
+                contexto_extra = line.split(':')[1].strip()
+            if "AÑOS:" in line.upper():
+                partes_anios = line.split(':')[1].replace('[','').replace(']','').split(',')
+                for a in partes_anios:
+                    clean_a = re.sub(r'\D', '', a) # Solo dígitos
+                    if len(clean_a) == 4:
+                        anios_extra.append(clean_a)
+                        
+        return contexto_extra, anios_extra
+    except Exception as e:
+        print(f"Error consultando IA: {e}")
+        return "", []
+
+
+
 def repartir_denuncias(df, auditores):
     """
     Reparte las denuncias entre los auditores.
@@ -863,6 +1016,40 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
     y generar una conclusión preliminar basada en palabras clave. Además, genera una segunda
     hoja con el código Python para estadísticas y hojas de reparto por auditor.
     """
+
+    # BLOQUE DE PREGUNTA IA
+
+    print("Iniciando selector de IA...")
+    try:
+        # Creamos la raíz
+        root_selector = tk.Tk()
+        
+        # IMPORTANTE: No usar withdraw() inmediatamente si da problemas, 
+        # pero probemos withdraw() + update() que suele funcionar.
+        root_selector.withdraw()
+        root_selector.attributes('-topmost', True)
+        
+        # Esta línea es clave: procesa eventos pendientes antes de abrir la ventana hija
+        root_selector.update() 
+        
+        # Llamamos a la función
+        modelo_seleccionado = seleccionar_modelo_ia(root_selector)
+        
+        root_selector.destroy()
+        
+        usar_ia = True if modelo_seleccionado else False
+        
+        if usar_ia:
+            print(f"\n>>> MODO IA ACTIVADO: Modelo '{modelo_seleccionado}' <<<\n")
+        else:
+            print("\n>>> MODO ESTÁNDAR: Ejecución sin IA <<<\n")
+
+    except Exception as e:
+        print(f"Error CRÍTICO al abrir selector: {e}")
+        usar_ia = False
+        modelo_seleccionado = None
+
+        
     
     # Definición de la estructura de auditores
     # El usuario debe reemplazar 'Auditor X' y 'Tributario' según sea necesario.
@@ -886,6 +1073,11 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         'Carlos Martinez': 'Tributario',
         'Auditor 1': 'Cambiario',
     }
+
+
+   
+
+
 
     # =======================================================================================
     # SECCIÓN DE REGLAS ANIDADAS (Dependencias entre Conductas Sancionables)
@@ -1002,34 +1194,40 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         print("Se omitió el cruce de información de Beneficio de Auditoría.")
 
     REGLA_PRINCIPAL_AUXILIAR = list(REGLAS_ANIDADAS.keys())[0] if REGLAS_ANIDADAS else None
-
+    
+    print(f"--- Intentando leer archivo: {os.path.basename(ruta_archivo_entrada)} ---")
+    
     try:
-        # Intenta leer el archivo Excel
-        # Leemos la columna 'Fecha Hechos' como texto para luego hacer un parseo controlado
+        # Cargamos el Excel
         df = pd.read_excel(ruta_archivo_entrada, engine='openpyxl', dtype={'Fecha Hechos': str})
-
-        # --- CORRECCIÓN DE ENCABEZADOS ---
-        # 1. Eliminar espacios en blanco al principio y final de los nombres de las columnas
+        
+        # Limpieza de encabezados
         df.columns = df.columns.str.strip()
-
-        # 2. Validación robusta de la columna 'Documento Denunciado'
-        col_doc_denunciado = 'Documento Denunciado'
-        if col_doc_denunciado not in df.columns:
-            columna_encontrada = None
-            # Buscar una columna que se parezca (ej: "No. Documento Denunciado", "DOCUMENTO DENUNCIADO", etc.)
-            # CORRECCIÓN: Se excluye explícitamente la palabra "tipo" para no confundirla con "Tipo Documento Denunciado"
+        
+        # Validación de columna clave
+        if 'Documento Denunciado' not in df.columns:
+            col_found = False
             for col in df.columns:
-                col_lower = str(col).lower()
-                if 'documento' in col_lower and 'denunciado' in col_lower and 'tipo' not in col_lower:
-                    columna_encontrada = col
+                if 'documento' in str(col).lower() and 'denunciado' in str(col).lower():
+                    df.rename(columns={col: 'Documento Denunciado'}, inplace=True)
+                    col_found = True
                     break
-            
-            if columna_encontrada:
-                print(f"Aviso: Se renombró la columna '{columna_encontrada}' a '{col_doc_denunciado}' para el procesamiento.")
-                df.rename(columns={columna_encontrada: col_doc_denunciado}, inplace=True)
-            else:
-                # Si definitivamente no existe, lanzamos un error claro
-                raise KeyError(f"No se encontró la columna obligatoria '{col_doc_denunciado}' (ni variantes válidas) en el archivo. Verifique los encabezados.")
+            if not col_found:
+                print("ERROR: No se encontró la columna 'Documento Denunciado'.")
+                return
+
+        print(f"✅ EXITO: Datos cargados. Filas a procesar: {len(df)}")
+
+    except Exception as e:
+        print(f"❌ ERROR CRÍTICO AL LEER EL ARCHIVO: {e}")
+        return
+
+
+    
+
+
+
+
 
         # Diccionario de sinónimos para hacer la búsqueda más robusta
         sinonimos = {
@@ -2018,7 +2216,7 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
 
 
         # Estas columnas serán añadidas al DataFrame de salida
-        df['Prioritaria'] = ''
+            
         df['Año de Investigación'] = ''
         df['Conclusión'] = ''
         df['Auditor'] = '' # Nueva columna para el nombre del auditor
@@ -2031,545 +2229,228 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         df['Fecha Firmeza'] = '' # Nueva columna Fecha Firmeza
 
 
-        # Itera sobre cada fila del DataFrame para procesar cada denuncia
-        for index, row in df.iterrows():
-            descripcion_hechos = str(row.get('Descripción de los Hechos', ''))
-            
-            # Intentar parsear la Fecha Radicación para usar su año base
-            fecha_radicacion_str = str(row.get('Fecha Radicación', ''))
-            anho_radicacion = None
-            if pd.notna(fecha_radicacion_str) and fecha_radicacion_str.strip():
-                try:
-                    fecha_radicacion = pd.to_datetime(fecha_radicacion_str, dayfirst=True, errors='coerce')
-                    if pd.notna(fecha_radicacion):
-                        anho_radicacion = fecha_radicacion.year
-                except:
-                    pass
-            
-            # --- Lógica para determinar el año de investigación y la prioridad ---
-            
-            anho_valido = set()
-            descripcion_normalizada_lower = descripcion_hechos.lower()
-            
-            # 1. Búsqueda de Años Explícitos (2018-2100)
-            anho_encontrado_explicito = re.findall(r'\b(20\d{2})\b', descripcion_hechos)
-            for anho in anho_encontrado_explicito:
-                if 2018 <= int(anho) <= 2100:
-                    anho_valido.add(anho)
+    
 
-            # 2. Búsqueda de "desde el año pasado"
-            if anho_radicacion and "desde el año pasado" in descripcion_normalizada_lower:
+        print(f"Iniciando procesamiento de {len(df)} registros...")
+        if usar_ia: print("NOTA: El procesamiento con IA tomará más tiempo por el análisis semántico.")
+
+    # Itera sobre cada fila del DataFrame
+        for index, row in df.iterrows():
+        # Barra de progreso en consola
+            if index % 5 == 0: print(f"Procesando fila {index + 1} de {len(df)}...")
+
+        descripcion_hechos = str(row.get('Descripción de los Hechos', ''))
+        
+        # Inicializamos variables críticas
+        contexto_ia = ""
+        anios_ia = []
+        
+        # --- A. CONSULTA A LA IA ---
+        if usar_ia:
+            try:
+                ctx, anios = consultar_contexto_ia(descripcion_hechos, modelo_seleccionado)
+                contexto_ia = " " + ctx 
+                anios_ia = anios
+            except Exception as e:
+                print(f"Advertencia fila {index}: Falló la IA. Error: {e}")
+
+        # --- B. DETERMINAR AÑO DE INVESTIGACIÓN ---
+        anho_valido = set()
+        
+        # 1. Años de la IA
+        for a in anios_ia:
+            if 2018 <= int(a) <= 2100: anho_valido.add(str(a))
+
+        # 2. Años del texto (Método Tradicional)
+        descripcion_normalizada_lower = descripcion_hechos.lower()
+        
+        # Parseo fecha radicación para referencias relativas
+        fecha_radicacion_str = str(row.get('Fecha Radicación', ''))
+        anho_radicacion = None
+        if pd.notna(fecha_radicacion_str) and fecha_radicacion_str.strip():
+            try:
+                fr = pd.to_datetime(fecha_radicacion_str, dayfirst=True, errors='coerce')
+                if pd.notna(fr): anho_radicacion = fr.year
+            except: pass
+
+        # Búsqueda explícita 20xx
+        for anho in re.findall(r'\b(20\d{2})\b', descripcion_hechos):
+            if 2018 <= int(anho) <= 2100: anho_valido.add(anho)
+
+        # Referencias relativas ("hace dos años", "año pasado")
+        if anho_radicacion:
+            if "desde el año pasado" in descripcion_normalizada_lower:
                 anho_valido.add(str(anho_radicacion - 1))
             
-            # 3. Búsqueda de "hace X años" (Rango retrospectivo, máximo 5 años)
+            numeros_txt = {'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4, 'cinco': 5}
+            for match_x in re.findall(r'(?:desde\s+)?hace\s+(\d+|[a-zA-Z]+)\s+años', descripcion_normalizada_lower):
+                try: val = int(match_x)
+                except: val = numeros_txt.get(match_x, 0)
+                if val > 0:
+                    start = anho_radicacion - val
+                    limit = max(anho_radicacion - 5, 2018)
+                    for y in range(start, anho_radicacion + 1):
+                        if y >= limit: anho_valido.add(str(y))
+
+        # Fallback: Fecha Hechos
+        if not anho_valido:
+            fh_str = str(row.get('Fecha Hechos', ''))
+            if pd.notna(fh_str) and fh_str.strip():
+                fh = pd.to_datetime(fh_str, dayfirst=True, errors='coerce')
+                if pd.notna(fh): anho_valido.add(str(fh.year))
+
+        anho_investigacion = ', '.join(sorted(list(anho_valido))) if anho_valido else 'No determinado'
+
+        # Prioridad
+        prioridad = 'No'
+        if anho_valido:
+            actual = datetime.now().year
+            if any(int(a) <= actual - 2 for a in anho_valido): prioridad = 'Si'
+
+        df.at[index, 'Año de Investigación'] = anho_investigacion
+        df.at[index, 'Prioritaria'] = prioridad
+
+        # --- C. CLASIFICACIÓN DE CONDUCTAS ---
+        texto_completo = descripcion_hechos + contexto_ia
+        desc_norm = normalizar_texto(texto_completo)
+        desc_lema = lematizar_artesanal(desc_norm)
+        
+        matches = []
+        PESOS = {'patron_regex': 60, 'determinantes': 50, 'exacta': 40, 'contexto': 15, 'legacy': 10, 'refuerzo': 5}
+
+        # Función auxiliar local para puntuación
+        def calc_pts(lista, peso):
+            pts = 0
+            if not lista: return 0
+            for item in lista:
+                if isinstance(item, (list, tuple)): # Grupo
+                    g = [lematizar_artesanal(normalizar_texto(x)) for x in item]
+                    if all(gi in desc_lema and not detectar_negacion_cercana(desc_lema, gi) for gi in g):
+                        pts += peso * len(g)
+                elif isinstance(item, str): # Simple
+                    i_lema = lematizar_artesanal(normalizar_texto(item))
+                    if i_lema in desc_lema and not detectar_negacion_cercana(desc_lema, i_lema):
+                        pts += peso
+            return pts
+
+        for reg_nom, data in reglas_conclusion.items():
+            for key, rules in data['reglas'].items():
+                puntos = 0
+                
+                # 1. Negación (Abortar si encuentra palabra negativa)
+                if 'palabras_negativas' in rules and rules['palabras_negativas']:
+                    if any(normalizar_texto(pn) in desc_norm for pn in rules['palabras_negativas']): continue
+
+                # 2. Refuerzo
+                bono = 0
+                if 'palabras_refuerzo' in rules:
+                    bono = calc_pts(rules['palabras_refuerzo'], 0) * 0 # Solo chequeo existencia simple
+                    if any(normalizar_texto(pr) in desc_norm for pr in rules.get('palabras_refuerzo', [])): bono = 50
+
+                # 3. Puntuación
+                # Exacta
+                k_lema = lematizar_artesanal(normalizar_texto(key))
+                if k_lema in desc_lema and not detectar_negacion_cercana(desc_lema, k_lema): puntos += PESOS['exacta']
+                
+                # Listas
+                puntos += calc_pts(rules.get('palabras_determinantes', []), PESOS['determinantes'])
+                puntos += calc_pts(rules.get('palabras_contexto', []), PESOS['contexto'])
+                puntos += calc_pts(rules.get('palabras_clave', []), PESOS['legacy'])
+                
+                # Regex
+                if 'patrones_regex' in rules:
+                    for pat in rules['patrones_regex']:
+                        if re.search(pat, desc_lema, re.IGNORECASE): puntos += PESOS['patron_regex']
+
+                if puntos > 0:
+                    matches.append({
+                        'Puntaje': puntos + bono,
+                        'Regimen': reg_nom,
+                        'Conducta': rules['Conducta'],
+                        'Conducta Sancionable': rules['Conducta Sancionable'],
+                        'Impuesto / Infracción': rules['Impuesto / Infracción'],
+                        'Normatividad': rules.get('Normatividad', 'N/A'),
+                        'Puntos de Auditoria': rules.get('Puntos de Auditoria', 'N/A')
+                    })
+
+        # --- D. FILTRADO Y EXCLUSIÓN ---
+        EXCLUSION = {
+            'no declara regimen simple de tributacion': ['no declara renta', 'no declara iva', 'no declara impuesto al consumo'],
+            'no esta inscrito en el rut': ['no declara renta', 'no declara iva'],
+            'evade impuestos': ['inexactitud declaracion ingresos y patrimonio'],
+            'contrabando abierto': ['no factura']
+        }
+        eliminar = set()
+        for m in matches:
+            if m['Puntaje'] >= 40 and m['Conducta Sancionable'] in EXCLUSION:
+                eliminar.update(EXCLUSION[m['Conducta Sancionable']])
+        matches = [m for m in matches if m['Conducta Sancionable'] not in eliminar]
+
+        finales = []
+        if matches:
+            max_p = max(m['Puntaje'] for m in matches)
+            umbral = max_p * 0.10
+            base = [m for m in matches if m['Puntaje'] >= umbral]
+            # Unicos
+            seen = set()
+            for m in base:
+                k = (m['Regimen'], m['Conducta Sancionable'])
+                if k not in seen: finales.append(m); seen.add(k)
+        
+        # Reglas Anidadas
+        if finales and max_p >= 10:
+            for princ, aux in REGLAS_ANIDADAS.items():
+                if any(m['Conducta Sancionable'] == princ for m in finales) and not any(m['Conducta Sancionable'] == aux['Conducta Sancionable'] for m in finales):
+                    finales.insert(1, aux) # Insertar después del líder
+
+        # --- E. ESCRITURA EN DATAFRAME ---
+        # Limpiar
+        cols_borrar = ['Régimen', 'Conducta', 'Conducta Sancionable', 'Impuesto / Infracción', 'Normatividad', 'Puntos de Auditoria']
+        for c in cols_borrar: df.at[index, c] = 'No Clasificado' if 'Normatividad' not in c else 'N/A'
+
+        if finales:
+            df.at[index, 'Régimen'] = '\n'.join(pd.Series([m['Regimen'] for m in finales]).unique())
+            df.at[index, 'Conducta'] = '\n'.join(pd.Series([m['Conducta'] for m in finales]).unique())
+            df.at[index, 'Conducta Sancionable'] = '\n'.join(pd.Series([m['Conducta Sancionable'] for m in finales]).unique())
+            df.at[index, 'Impuesto / Infracción'] = '\n'.join(pd.Series([m['Impuesto / Infracción'] for m in finales]).unique())
+            df.at[index, 'Normatividad'] = '\n'.join(pd.Series([m['Normatividad'] for m in finales]).unique())
+            df.at[index, 'Puntos de Auditoria'] = '\n'.join(pd.Series([m['Puntos de Auditoria'] for m in finales]).unique())
             
-            # Mapeo de números en texto a dígitos
-            numeros_en_texto = {
-                'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4, 'cinco': 5, 
-                'seis': 6, 'siete': 7, 'ocho': 8, 'nueve': 9, 'diez': 10
-            }
-            
-            # Patrón para buscar "hace X años" o "desde hace X años" donde X es dígito o letra
-            # Captura: (hace|desde hace) (X) (años)
-            patron_hace_x_anios = r'(?:desde\s+)?hace\s+(\d+|[a-zA-Z]+)\s+años'
-            matches_hace_x = re.findall(patron_hace_x_anios, descripcion_normalizada_lower)
-            
-            if anho_radicacion:
-                for match_x in matches_hace_x:
-                    # Convertir X a número
-                    try:
-                        anios_retroactivos = int(match_x)
-                    except ValueError:
-                        anios_retroactivos = numeros_en_texto.get(match_x, 0) # 0 si no encuentra el texto
-                    
-                    if anios_retroactivos > 0:
-                        anho_inicio = anho_radicacion - anios_retroactivos
-                        
-                        # Definir el límite inferior (máximo 5 años atrás)
-                        limite_inferior = max(anho_radicacion - 5, 2018) # Máximo 5 años, no antes de 2018
-                        
-                        # Generar el rango de años
-                        for anho in range(anho_inicio, anho_radicacion + 1):
-                            if anho >= limite_inferior:
-                                anho_valido.add(str(anho))
+            txts = [f"régimen [{m['Regimen']}] conducta [{m['Conducta']}]" for m in finales]
+            df.at[index, 'Conclusión'] = f"Se detectaron: {' | '.join(txts)}. Vigencias: [{anho_investigacion}]"
+        else:
+            df.at[index, 'Conclusión'] = "No se encontraron infracciones clasificables."
 
-            # 4. REGLA CRUCIAL: Si aún no hay años, usar el año de la columna 'Fecha Hechos'
-            if not anho_valido:
-                fecha_hechos_str = str(row.get('Fecha Hechos', ''))
-                fecha_hechos = pd.NaT # Inicializar como NaT
+        # Lavado y Beneficio (Mantenimiento simple)
+        es_lavado = any(x in desc_norm for x in ["lavado de activo", "lava activos", "lavado"])
+        df.at[index, 'Lavado de Activos'] = 'SI' if es_lavado else 'NO'
 
-                if pd.notna(fecha_hechos_str) and fecha_hechos_str.strip():
-                    
-                    # Intentar parsear con errors='coerce' para obtener NaT si falla
-                    fecha_hechos = pd.to_datetime(fecha_hechos_str, dayfirst=True, errors='coerce')
-
-                # Final check before extracting the year (Asegurando que no sea NaT)
-                if pd.notna(fecha_hechos):
-                     anho_valido.add(str(fecha_hechos.year))
+        doc_raw = limpiar_identificacion(row.get('Documento Denunciado', ''))
+        ben_info = {'ben': [], 'anio': [], 'firm': [], 'dir': []}
+        if doc_raw in beneficio_map:
+            for y in anho_investigacion.split(','):
+                y = y.strip()
+                if y in beneficio_map[doc_raw]:
+                    d = beneficio_map[doc_raw][y]
+                    ben_info['ben'].append('SI'); ben_info['anio'].append(d['texto'])
+                    ben_info['firm'].append(d['firmeza']); ben_info['dir'].append(d['direccion'])
+        
+        if ben_info['ben']:
+            df.at[index, 'Beneficio Auditoria'] = '\n'.join(ben_info['ben'])
+            df.at[index, 'Año Beneficio Auditoria'] = '\n'.join(ben_info['anio'])
+            df.at[index, 'Fecha Firmeza'] = '\n'.join(ben_info['firm'])
+            df.at[index, 'Dirección Seccional'] = '\n'.join(list(set(filter(None, ben_info['dir']))))
+        else:
+            df.at[index, 'Beneficio Auditoria'] = 'NO' if ruta_archivo_beneficio else ''   
 
 
-            anho_investigacion = ', '.join(sorted(list(anho_valido))) if anho_valido else 'No determinado'
-
-            # Lógica para determinar si la denuncia es prioritaria
-            prioridad = 'No'
-            if anho_valido:
-                # Comprobar si algún año de la denuncia es más de 2 años anterior a la fecha actual
-                anho_actual = datetime.now().year
-                if any(int(anho) <= anho_actual - 2 for anho in anho_valido):
-                    prioridad = 'Si'
-
-            df.at[index, 'Año de Investigación'] = anho_investigacion
-            df.at[index, 'Prioritaria'] = prioridad
-
-            # --- Lógica de clasificación de múltiples fases (PUNTUACIÓN INTELIGENTE) ---
-            
-            # 1. Normalización básica (quita tildes, minúsculas)
-            descripcion_normalizada = normalizar_texto(descripcion_hechos)
-            
-            # 2. Lematización Artesanal (NUEVO PASO)
-            # Convierte 'no facturo' -> 'no FACTURA', 'compra ilegal' -> 'COMPRA CONTRABANDO'
-            descripcion_lematizada = lematizar_artesanal(descripcion_normalizada)
-
-            # Usaremos la descripción lematizada para las búsquedas a partir de ahora
-            texto_para_analisis = descripcion_lematizada 
-
-            matches_con_puntaje = []
-
-            # Analizamos el "sabor" general del texto antes de entrar al detalle.
-            # Esto nos dirá si el texto "suena" más a Tributario, Aduanero o Cambiario.
-            dominio_contextual = calcular_densidad_dominio(texto_para_analisis)
-
-            for regimen_nombre, data in reglas_conclusion.items():
-                for key, clasificacion in data['reglas'].items():
-                    puntaje = 0
-                    
-                    # --- INICIO: Lógica de Contexto (Refuerzo y Negación) ---
-                    
-                    # 1. Verificar PALABRAS NEGATIVAS (Contexto de Negación)
-                    # Si se encuentra una palabra de negación, esta regla se anula.
-                    palabras_negativas = clasificacion.get('palabras_negativas', [])
-                    if palabras_negativas:
-                        for p_neg in palabras_negativas:
-                            if normalizar_texto(p_neg) in descripcion_normalizada:
-                                puntaje = -1000 # Penalización extrema para anular la regla
-                                break # Salir del bucle de negación
-                    
-                    if puntaje < 0:
-                        # Si fue penalizada, saltar al siguiente 'key' (regla)
-                        # y guardar este match con puntaje negativo para evitar que gane
-                        matches_con_puntaje.append({
-                            'Puntaje': puntaje,
-                            'Regimen': regimen_nombre,
-                            'Conducta': clasificacion['Conducta'],
-                            'Conducta Sancionable': clasificacion['Conducta Sancionable'],
-                            'Impuesto / Infracción': clasificacion['Impuesto / Infracción'],
-                            'Normatividad': clasificacion.get('Normatividad', 'N/A'),
-                            'Puntos de Auditoria': clasificacion.get('Puntos de Auditoria', 'N/A')
-                        })
-                        continue # Saltar a la siguiente regla
-
-                    # 2. Verificar PALABRAS REFUERZO (Contexto de Afirmación)
-                    # Si se encuentra una palabra de refuerzo, dar un bono de puntaje.
-                    palabras_refuerzo = clasificacion.get('palabras_refuerzo', [])
-                    bono_refuerzo = 0
-                    if palabras_refuerzo:
-                        for p_ref in palabras_refuerzo:
-                            if normalizar_texto(p_ref) in descripcion_normalizada:
-                                bono_refuerzo += 50 # Bono de 50 puntos por cada palabra de refuerzo
-                    
-                    # --- FIN: Lógica de Contexto ---
-
-                    # --- INICIO: Lógica de Puntuación Jerárquica (Paso 3) ---
-                    
-                    # Definimos los pesos para cada categoría
-                    PESOS = {
-                        'patron_regex': 60,   # Estructura de frase completa (Máxima prioridad)
-                        'determinantes': 50,  # Palabras fuertes (ej. "contrabando", "evasión")
-                        'exacta': 40,         # Coincidencia exacta del título de la regla
-                        'definicion': 1,      # Peso base para la IA
-                        'contexto': 15,       # Palabras de ámbito (ej. "mercancía", "impuesto")
-                        'legacy': 10,         # Peso para tus listas antiguas 'palabras_clave'
-                        'refuerzo': 5         # Palabras secundarias
-                    }
-
-                    puntaje_base = 0
-
-                    # 1. Puntuación por Coincidencia Exacta (Título de la regla)
-                    # Se busca el título tal cual o su LEMA en el texto
-                    key_normalizada = normalizar_texto(key)
-                    termino_exacto = None
-                    if key_normalizada in texto_para_analisis:
-                        termino_exacto = key_normalizada
-                    elif key_normalizada.upper() in texto_para_analisis:
-                        termino_exacto = key_normalizada.upper()
-                        
-                    if termino_exacto:
-                        # Validamos negación incluso en el título (ej. "No evade impuestos")
-                        if not detectar_negacion_cercana(texto_para_analisis, termino_exacto):
-                            puntaje_base += PESOS['exacta']
-
-                    # 2. Función interna para procesar listas de palabras con peso y validación de negación
-                    def procesar_lista_ponderada(lista_palabras, peso):
-                        puntos = 0
-                        if not lista_palabras:
-                            return 0
-                        
-                        # Iteramos sobre la lista (soporta strings simples o grupos en tuplas/listas)
-                        for item in lista_palabras:
-                            # CASO A: Grupo de palabras (todas deben estar y ser afirmativas)
-                            if isinstance(item, (list, set, tuple)):
-                                grupo_norm = [normalizar_texto(p) for p in item]
-                                palabras_validas_grupo = 0
-                                
-                                for p in grupo_norm:
-                                    # --- CORRECCIÓN: Lematizar la palabra clave para coincidir con el texto ---
-                                    # Esto asegura que si buscas "falsa" coincida con "FICTICIO" en el texto
-                                    p_lema = lematizar_artesanal(p) 
-                                    
-                                    t_encontrado = None
-                                    # Buscamos el lema calculado en el texto ya procesado
-                                    if p_lema in texto_para_analisis: 
-                                        t_encontrado = p_lema
-                                    
-                                    # Validar existencia y NO negación
-                                    if t_encontrado and not detectar_negacion_cercana(texto_para_analisis, t_encontrado):
-                                        palabras_validas_grupo += 1
-                                
-                                # Si el grupo está completo, sumar puntos (peso * cantidad de palabras)
-                                if palabras_validas_grupo == len(grupo_norm) and len(grupo_norm) > 0:
-                                    puntos += peso * len(grupo_norm)
-                                    
-                            # CASO B: Palabra individual (string)
-                            elif isinstance(item, str):
-                                p_norm = normalizar_texto(item)
-                                
-                                # --- CORRECCIÓN: Lematizar la palabra clave para coincidir con el texto ---
-                                p_lema = lematizar_artesanal(p_norm)
-                                
-                                t_encontrado = None
-                                # Buscamos el lema calculado en el texto ya procesado
-                                if p_lema in texto_para_analisis: 
-                                    t_encontrado = p_lema
-                                
-                                if t_encontrado and not detectar_negacion_cercana(texto_para_analisis, t_encontrado):
-                                    puntos += peso
-                        
-                        return puntos
-
-                    # 3. Aplicar pesos por categorías jerárquicas
-                    
-                    # A. Palabras Determinantes (Nueva Categoría - Peso Máximo)
-                    if 'palabras_determinantes' in clasificacion:
-                        puntaje_base += procesar_lista_ponderada(clasificacion['palabras_determinantes'], PESOS['determinantes'])
-                        
-                    # B. Palabras de Contexto (Nueva Categoría - Peso Medio)
-                    if 'palabras_contexto' in clasificacion:
-                        puntaje_base += procesar_lista_ponderada(clasificacion['palabras_contexto'], PESOS['contexto'])
-                        
-                    # C. Palabras de Refuerzo (Integra tu lógica anterior de refuerzo)
-                    if 'palabras_refuerzo' in clasificacion:
-                        puntaje_base += procesar_lista_ponderada(clasificacion['palabras_refuerzo'], PESOS['refuerzo'])
-
-                    # D. Soporte Legacy (Diccionario actual)
-                    # Si la regla tiene 'palabras_clave' (formato antiguo), se procesan con peso estándar
-                    # Esto evita que el código falle mientras actualizas tu diccionario poco a poco.
-                    if 'palabras_clave' in clasificacion:
-                        puntaje_base += procesar_lista_ponderada(clasificacion['palabras_clave'], PESOS['legacy'])
-
-                    # E. Patrones de Frase con Regex (Paso 4)
-                    # Busca estructuras gramaticales complejas (Sujeto + Acción + Objeto)
-                    # Esto permite detectar "se niega a facturar" vs "factura correctamente"
-                    if 'patrones_regex' in clasificacion:
-                        for patron in clasificacion['patrones_regex']:
-                            # Buscamos el patrón en el texto lematizado
-                            # El regex es muy potente porque define orden y distancia entre palabras
-                            if re.search(patron, texto_para_analisis, re.IGNORECASE):
-                                puntaje_base += PESOS['patron_regex']
-
-                    # --- FIN: Lógica de Puntuación Jerárquica ---
 
 
-                    # -----------------------------------------------------------------------------
-                    # CONDICIONAL DE IA: Solo se ejecuta si la bandera activar_ia es verdadera
-                    # -----------------------------------------------------------------------------
-                    if activar_ia and 'definicion' in clasificacion and clasificacion['definicion']:
-                        # Llamamos a la función que compara semánticamente la denuncia con la definición
-                        # (Asegúrate de tener la función calcular_puntaje_definicion definida arriba)
-                        puntos_ia = calcular_puntaje_definicion(texto_para_analisis, clasificacion['definicion'])
-                        
-                        # Sumamos al puntaje base
-                        puntaje_base += (puntos_ia * PESOS['definicion'])
-                        
-                        # Opcional: Debug para ver cuándo la IA está actuando
-                        # if puntos_ia > 0:
-                        #     print(f"   [IA Activa] {puntos_ia} puntos por similitud con definición de '{key}'")
-                    # -----------------------------------------------------------------------------
 
 
-                    # --- CÁLCULO FINAL ---
-                    # Solo considerar si hay alguna coincidencia base
-                    if puntaje_base > 0:
-                        puntaje = puntaje_base + bono_refuerzo # Sumar el bono de refuerzo
-                    else:
-                        # Si no hay coincidencias de palabras clave, el bono de refuerzo no debe contar
-                        puntaje = 0 
 
 
-                    if puntaje > 0:
-                        matches_con_puntaje.append({
-                            'Puntaje': puntaje,
-                            'Regimen': regimen_nombre,
-                            'Conducta': clasificacion['Conducta'],
-                            'Conducta Sancionable': clasificacion['Conducta Sancionable'],
-                            'Impuesto / Infracción': clasificacion['Impuesto / Infracción'],
-                            'Normatividad': clasificacion.get('Normatividad', 'N/A'), # EXTRAÍDO
-                            'Puntos de Auditoria': clasificacion.get('Puntos de Auditoria', 'N/A') # EXTRAÍDO
-                        })
-
-
-                    # --- INICIO: Matriz de Exclusión Mutua (Paso 5) ---
-            # Validación Cruzada: Elimina contradicciones lógicas entre infracciones detectadas.
-            
-            if matches_con_puntaje:
-                # 1. Definición de la Matriz de Incompatibilidades
-                # Estructura: { 'CONDUCTA_DOMINANTE': ['CONDUCTA_DOMINADA_1', 'CONDUCTA_DOMINADA_2'] }
-                # Si la 'Dominante' tiene puntaje alto, elimina automáticamente a las 'Dominadas'.
                 
-                MATRIZ_EXCLUSION = {
-                    # CASO 1: Régimen Simple vs Régimen Ordinario
-                    # Si es del Régimen Simple, no debe ser procesado por las obligaciones del régimen ordinario individualmente
-                    'no declara regimen simple de tributacion': [
-                        'no declara renta', 
-                        'no declara iva', 
-                        'no declara impuesto al consumo'
-                    ],
-                    
-                    # CASO 2: Jerarquía de Registro
-                    # Si no tiene RUT, esa es la infracción raíz; 'no declarar' es consecuencia obvia.
-                    # Se prioriza la inscripción para sanear la base.
-                    'no esta inscrito en el rut': [
-                        'no declara renta',
-                        'no declara iva'
-                    ],
-                    
-                    # CASO 3: Evasión vs Infracciones Menores
-                    # Si se detecta una evasión compleja (delito), a veces absorbe fallas formales menores
-                    'evade impuestos': [
-                        'inexactitud declaracion ingresos y patrimonio' # Generalmente la evasión es la conclusión mayor
-                    ],
-                    
-                    # CASO 4: Contrabando (Aduanero) vs Tributario
-                    # Si es contrabando, la falta de factura es aduanera, no necesariamente tributaria pura
-                    'contrabando abierto': [
-                        'no factura' 
-                    ]
-                }
-
-                conductas_a_eliminar = set()
-
-                # 2. Identificar candidatos fuertes
-                # Solo una regla con buen puntaje (ej. >40, coincidencia exacta o determinante) tiene derecho a excluir a otras.
-                for posible_lider in matches_con_puntaje:
-                    nombre_lider = posible_lider['Conducta Sancionable']
-                    puntaje_lider = posible_lider['Puntaje']
-                    
-                    if puntaje_lider >= 40 and nombre_lider in MATRIZ_EXCLUSION:
-                        # Si encontramos un líder fuerte, marcamos sus incompatibles para eliminación
-                        dominadas = MATRIZ_EXCLUSION[nombre_lider]
-                        conductas_a_eliminar.update(dominadas)
-
-                # 3. Filtrar la lista de matches
-                # Creamos una nueva lista conservando solo las que NO fueron eliminadas
-                if conductas_a_eliminar:
-                    matches_filtrados = []
-                    for match in matches_con_puntaje:
-                        if match['Conducta Sancionable'] not in conductas_a_eliminar:
-                            matches_filtrados.append(match)
-                        else:
-                            # (Opcional) Debug: print(f"Regla '{match['Conducta Sancionable']}' eliminada por exclusión mutua.")
-                            pass
-                    
-                    # Actualizamos la lista principal
-                    matches_con_puntaje = matches_filtrados
-
-            # --- FIN: Matriz de Exclusión Mutua ---
-
-
-
-            conclusiones_encontradas = []
-            max_puntaje = 0
-            
-            if matches_con_puntaje:
-                # Encontrar el puntaje máximo
-                max_puntaje = max(match['Puntaje'] for match in matches_con_puntaje)
-                
-                # --- LÓGICA DE UMBRAL (CORREGIDA) ---
-                # CORRECCIÓN: Se baja el porcentaje del 85% (0.85) al 10% (0.10).
-                # Esto permite que si la mejor regla tiene 20 puntos (exacta), 
-                # cualquier regla con 2 puntos o más (palabras clave) también sea incluida.
-                
-                umbral_segunda_coincidencia = max_puntaje * 0.10
-                
-                # Filtrar todos los matches que superan el umbral (permite múltiples conclusiones fuertes)
-                # Esta será nuestra base inicial, incluyendo todos los matches fuertes.
-                conclusiones_encontradas_base = [
-                    match for match in matches_con_puntaje if match['Puntaje'] >= umbral_segunda_coincidencia
-                ]
-                
-                # Eliminar duplicados de la base
-                unique_conclusions_base = []
-                seen_keys = set()
-                for match in conclusiones_encontradas_base:
-                    key = (match['Regimen'], match['Conducta Sancionable'])
-                    if key not in seen_keys:
-                        unique_conclusions_base.append(match)
-                        seen_keys.add(key)
-                
-                conclusiones_encontradas = unique_conclusions_base
-                # -----------------------------------------------------------------------------
-
-            # =======================================================================================
-            # SECCIÓN DE REGLAS ANIDADAS (Lógica Dinámica de la Regla Auxiliar - PRIORIZACIÓN)
-            # Se simplifica la lógica para asegurar que el anidamiento prevalezca y no interfiera
-            # con las otras conclusiones del 85%.
-            # =======================================================================================
-            
-            reglas_anidadas_a_agregar = []
-
-            if max_puntaje >= 10 and conclusiones_encontradas: 
-                
-                # Identificar la regla principal con el puntaje más alto (para priorización visual)
-                # NOTA: Esto asume que el de mayor puntaje es la regla activadora, lo cual es correcto.
-                
-                for principal_nombre, auxiliar_data in REGLAS_ANIDADAS.items():
-                    # 1. Verificar si la regla PRINCIPAL está entre las conclusiones encontradas
-                    es_regla_principal_encontrada = any(
-                        match['Conducta Sancionable'] == principal_nombre for match in conclusiones_encontradas
-                    )
-                    
-                    if es_regla_principal_encontrada:
-                        # 2. Verificar si la regla AUXILIAR ya fue encontrada
-                        auxiliar_presente = any(
-                            match['Conducta Sancionable'] == auxiliar_data['Conducta Sancionable'] for match in conclusiones_encontradas
-                        )
-                        
-                        if not auxiliar_presente:
-                            # 3. Si no está presente, AÑADIRLA A LA LISTA TEMPORAL DE ANIDADAS
-                            reglas_anidadas_a_agregar.append(auxiliar_data)
-                            
-            # 4. REESTRUCTURAR LAS CONCLUSIONES: Insertar las reglas anidadas antes de cualquier match
-            # del 85% que no sea la principal para darle visibilidad y prioridad.
-
-            if reglas_anidadas_a_agregar:
-                # La lista de conclusiones anidadas ahora incluye todas las conclusiones fuertes (85%+)
-                # Mantenemos el primer match (el de mayor puntaje)
-                conclusiones_final_priorizadas = conclusiones_encontradas[:1] 
-                
-                # Insertamos las reglas anidadas inmediatamente después de la principal
-                conclusiones_final_priorizadas.extend(reglas_anidadas_a_agregar)
-                
-                # Añadir las demás conclusiones del 85% que no sean duplicados
-                nombres_ya_anidados = {c['Conducta Sancionable'] for c in conclusiones_final_priorizadas}
-                
-                for match in conclusiones_encontradas[1:]: # Empezar desde el segundo match fuerte
-                    if match['Conducta Sancionable'] not in nombres_ya_anidados:
-                        conclusiones_final_priorizadas.append(match)
-                        
-                conclusiones_encontradas = conclusiones_final_priorizadas
-                
-            # =======================================================================================
-
-
-            # --- Llenado de columnas detalladas y de conclusión (LÓGICA DE SALTO DE LÍNEA) ---
-            
-            # Inicializar las nuevas columnas para el llenado
-            df.at[index, 'Régimen'] = 'No Clasificado'
-            df.at[index, 'Conducta'] = 'No Clasificado'
-            df.at[index, 'Conducta Sancionable'] = 'No Clasificado'
-            df.at[index, 'Impuesto / Infracción'] = 'No Clasificado'
-            df.at[index, 'Normatividad'] = 'N/A' # Inicializar Normatividad
-            df.at[index, 'Puntos de Auditoria'] = 'N/A' # Inicializar Puntos de Auditoria
-
-
-            if conclusiones_encontradas:
-                
-                # Consolidar los valores únicos para cada columna usando salto de línea ('\n')
-                
-                # 1. Régimen
-                regimenes_unicos = pd.Series([match['Regimen'] for match in conclusiones_encontradas]).unique()
-                df.at[index, 'Régimen'] = '\n'.join(regimenes_unicos)
-                
-                # 2. Conducta
-                conductas_unicas = pd.Series([match['Conducta'] for match in conclusiones_encontradas]).unique()
-                df.at[index, 'Conducta'] = '\n'.join(conductas_unicas)
-                
-                # 3. Conducta Sancionable
-                cs_unicas = pd.Series([match['Conducta Sancionable'] for match in conclusiones_encontradas]).unique()
-                df.at[index, 'Conducta Sancionable'] = '\n'.join(cs_unicas)
-                
-                # 4. Impuesto / Infracción
-                impuestos_unicos = pd.Series([match['Impuesto / Infracción'] for match in conclusiones_encontradas]).unique()
-                df.at[index, 'Impuesto / Infracción'] = '\n'.join(impuestos_unicos)
-                
-                # 5. Normatividad
-                normatividad_unica = pd.Series([match['Normatividad'] for match in conclusiones_encontradas]).unique()
-                df.at[index, 'Normatividad'] = '\n'.join(normatividad_unica)
-
-                # 6. Puntos de Auditoria
-                puntos_auditoria_unicos = pd.Series([match['Puntos de Auditoria'] for match in conclusiones_encontradas]).unique()
-                df.at[index, 'Puntos de Auditoria'] = '\n'.join(puntos_auditoria_unicos)
-
-                # 7. Lavado de Activos
-            claves_lavado = ["lavado de activo", "lava activos", "lavando activos","lavado","lavado de","labado","labado de"]
-            es_lavado = any(clave in descripcion_normalizada for clave in claves_lavado)
-            df.at[index, 'Lavado de Activos'] = 'SI' if es_lavado else 'NO'
-
-            # CRUCE BENEFICIO AUDITORIA ---
-            # Obtenemos el documento denunciado de la fila actual
-            doc_raw = row.get('Documento Denunciado', '')
-            doc_limpio = limpiar_identificacion(doc_raw)
-            
-            # 2. Obtener años investigados (separados por coma si hay varios)
-            anios_investigacion_str = df.at[index, 'Año de Investigación']
-            if anios_investigacion_str and anios_investigacion_str != 'No determinado':
-                lista_anios = [a.strip() for a in anios_investigacion_str.split(',')]
-            else:
-                lista_anios = []
-
-            # Listas para almacenar los hallazgos alineados
-            res_beneficio = []
-            res_anio_beneficio = []
-            res_firmeza = []
-            res_direccion = [] # Lista para direcciones
-
-            if doc_limpio and doc_limpio in beneficio_map:
-                datos_nit = beneficio_map[doc_limpio]
-                
-                # Recorrer cada año encontrado en la investigación
-                for anio_inv in lista_anios:
-                    if anio_inv in datos_nit:
-                        data_anio = datos_nit[anio_inv]
-                        
-                        res_beneficio.append('SI')
-                        res_anio_beneficio.append(data_anio['texto'])
-                        res_firmeza.append(data_anio['firmeza'])
-                        res_direccion.append(data_anio['direccion']) # Agregar dirección
-                    else:
-                        pass 
-
-            # Asignar resultados al DataFrame
-            if res_beneficio:
-                df.at[index, 'Beneficio Auditoria'] = '\n'.join(res_beneficio)
-                df.at[index, 'Año Beneficio Auditoria'] = '\n'.join(res_anio_beneficio)
-                df.at[index, 'Fecha Firmeza'] = '\n'.join(res_firmeza)
-                # Tomamos las direcciones únicas encontradas para no repetir si son la misma
-                direcciones_unicas = list(set(filter(None, res_direccion)))
-                df.at[index, 'Dirección Seccional'] = '\n'.join(direcciones_unicas)
-            else:
-                df.at[index, 'Beneficio Auditoria'] = 'NO' if ruta_archivo_beneficio else '' # Si no hay archivo, dejar vacío
-                df.at[index, 'Año Beneficio Auditoria'] = ''
-                df.at[index, 'Fecha Firmeza'] = ''
-                df.at[index, 'Dirección Seccional'] = ''
 
 
             # GENERACIÓN DE CONCLUSIÓN ---
