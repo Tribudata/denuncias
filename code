@@ -93,31 +93,32 @@ def aplicar_formato_excel(writer):
         'A': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
         'B': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
         'C': {'ancho': 60.00, 'alineacion': alineacion_izq_ajuste},
-        'D': {'ancho': 20.29, 'alineacion': alineacion_centro_ajuste},
-        'E': {'ancho': 14.00, 'alineacion': alineacion_centro_ajuste},
-        'F': {'ancho': 30.00, 'alineacion': alineacion_izq_ajuste},
-        'G': {'ancho': 20.29, 'alineacion': alineacion_centro_ajuste},
-        'H': {'ancho': 14.00, 'alineacion': alineacion_centro_ajuste},
-        'I': {'ancho': 35.00, 'alineacion': alineacion_izq_ajuste},
-        'J': {'ancho': 15.00, 'alineacion': alineacion_centro_ajuste},
-        'K': {'ancho': 13.15, 'alineacion': alineacion_centro_ajuste},
-        'L': {'ancho': 30.00, 'alineacion': alineacion_centro_ajuste},
-        'M': {'ancho': 15.00, 'alineacion': alineacion_centro_ajuste},
-        'N': {'ancho': 10.00, 'alineacion': alineacion_centro_ajuste},
-        'O': {'ancho': 14.00, 'alineacion': alineacion_centro_ajuste},
+        'D': {'ancho': 91.00, 'alineacion': alineacion_izq_ajuste},
+        'E': {'ancho': 20.29, 'alineacion': alineacion_centro_ajuste},
+        'F': {'ancho': 14.00, 'alineacion': alineacion_centro_ajuste},
+        'G': {'ancho': 30.00, 'alineacion': alineacion_izq_ajuste},
+        'H': {'ancho': 20.29, 'alineacion': alineacion_centro_ajuste},
+        'I': {'ancho': 14.00, 'alineacion': alineacion_centro_ajuste},
+        'J': {'ancho': 35.00, 'alineacion': alineacion_izq_ajuste},
+        'K': {'ancho': 15.00, 'alineacion': alineacion_centro_ajuste},
+        'L': {'ancho': 13.15, 'alineacion': alineacion_centro_ajuste},
+        'M': {'ancho': 30.00, 'alineacion': alineacion_centro_ajuste},
+        'N': {'ancho': 15.00, 'alineacion': alineacion_centro_ajuste},
+        'O': {'ancho': 10.00, 'alineacion': alineacion_centro_ajuste},
         'P': {'ancho': 14.00, 'alineacion': alineacion_centro_ajuste},
-        'Q': {'ancho': 27.00, 'alineacion': alineacion_centro_ajuste},
-        'R': {'ancho': 37.00, 'alineacion': alineacion_centro_ajuste},
-        'S': {'ancho': 37.00, 'alineacion': alineacion_centro_ajuste},
-        'T': {'ancho': 60.00, 'alineacion': alineacion_izq_ajuste},
-        'U': {'ancho': 34.00, 'alineacion': alineacion_centro_ajuste},
-        'V': {'ancho': 50.00, 'alineacion': alineacion_izq_ajuste},
-        'W': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
+        'Q': {'ancho': 40.00, 'alineacion': alineacion_centro_ajuste},
+        'R': {'ancho': 40.00, 'alineacion': alineacion_centro_ajuste},
+        'S': {'ancho': 40.00, 'alineacion': alineacion_centro_ajuste},
+        'T': {'ancho': 37.00, 'alineacion': alineacion_centro_ajuste},
+        'U': {'ancho': 60.00, 'alineacion': alineacion_izq_ajuste},
+        'V': {'ancho': 40.00, 'alineacion': alineacion_centro_ajuste},
+        'W': {'ancho': 50.00, 'alineacion': alineacion_izq_ajuste},
         'X': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
-        'Y': {'ancho': 25.00, 'alineacion': alineacion_centro_ajuste},
-        'Z': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
+        'Y': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
+        'Z': {'ancho': 25.00, 'alineacion': alineacion_centro_ajuste},
         'AA': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
-        'AB': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
+        'AB': {'ancho': 25.00, 'alineacion': alineacion_centro_ajuste},
+        'AC': {'ancho': 20.00, 'alineacion': alineacion_centro_ajuste},
     }
 
     # Formato para la hoja "Priorización" (Columnas A-W)
@@ -254,39 +255,47 @@ def lematizar_artesanal(texto):
     # Diccionario de lemas: { 'RAIZ_CONCEPTUAL': ['variacion1', 'variacion2', ...] }
     # Ordenar las variaciones de más larga a más corta es buena práctica en regex
     # para evitar reemplazos parciales indeseados.
-    diccionario_lemas = {
-        'FACTURA': ['facturacion', 'facturas', 'factura', 'facture', 'facturo', 'facturando', 'facturado', 'expide', 'emite', 'entregar recibo', 'dar recibo'],
-        'COMPRA': ['adquisicion', 'adquiere', 'adquirio', 'adquiriendo', 'compras', 'compro', 'compre', 'comprando', 'comprado'],
-        'VENDE': ['comercializa', 'comercio', 'ventas', 'vende', 'vendio', 'vendiendo', 'vendido'],
-        'DECLARA': ['declaracion', 'declaraciones', 'declaro', 'declara', 'declarando', 'declarado', 'presenta', 'presento', 'presentar'],
-        'PAGA': ['consigna', 'consignar', 'consignado', 'cancelar', 'cancela', 'cancelado', 'pagos', 'pago', 'pagado', 'pagando'],
-        'CONTRABANDO': ['ilegal', 'clandestino', 'contrabando'],
-        'OMISO': ['omiso', 'omision', 'omitio', 'no presento', 'no declaro', 'sin declarar', 'nunca declaro'],
-        'IVA': ['impuesto sobre las ventas', 'valor agregado', 'iva'],
-        'RENTA': ['impuesto de renta', 'renta'],
-        'INGRESOS': ['entradas de dinero', 'plata', 'ingresos', 'ganancias', 'dinero recibido'],
-        'EXTRANJERO': ['fuera del pais', 'internacional', 'exterior', 'extranjero'],
-        'EXOGENA': ['medios magneticos', 'informacion exogena', 'reporte de informacion', 'exogena'],
-        'RUT': ['registro unico tributario', 'rut'],
-        'ACTIVOS': ['bienes', 'propiedades', 'activos', 'patrimonio'],
-        'PASIVOS': ['deudas', 'obligaciones', 'pasivos', 'prestamos'],
-        'FICTICIO': ['simulado', 'irreal', 'fachada', 'ficticio', 'falso', 'falsa'],
-        'RETENCION': ['retefuente', 'retencion en la fuente', 'retencion'],
-        'TIMBRE': ['impuesto de timbre', 'timbre']
-    }
-    
-    # El texto ya debe venir normalizado (minúsculas, sin tildes) de la función previa
+    # 1. Definimos el diccionario FUERA de la función
+DICCIONARIO_LEMAS_RAW = {
+    'FACTURA': ['facturacion', 'facturas', 'factura', 'facture', 'facturo', 'facturando', 'facturado', 'expide', 'emite', 'entregar recibo', 'dar recibo'],
+    'COMPRA': ['adquisicion', 'adquiere', 'adquirio', 'adquiriendo', 'compras', 'compro', 'compre', 'comprando', 'comprado'],
+    'VENDE': ['comercializa', 'comercio', 'ventas', 'vende', 'vendio', 'vendiendo', 'vendido'],
+    'DECLARA': ['declaracion', 'declaraciones', 'declaro', 'declara', 'declarando', 'declarado', 'presenta', 'presento', 'presentar'],
+    'PAGA': ['consigna', 'consignar', 'consignado', 'cancelar', 'cancela', 'cancelado', 'pagos', 'pago', 'pagado', 'pagando'],
+    'CONTRABANDO': ['ilegal', 'clandestino', 'contrabando'],
+    'OMISO': ['omiso', 'omision', 'omitio', 'no presento', 'no declaro', 'sin declarar', 'nunca declaro'],
+    'IVA': ['impuesto sobre las ventas', 'valor agregado', 'iva'],
+    'RENTA': ['impuesto de renta', 'renta'],
+    'INGRESOS': ['entradas de dinero', 'plata', 'ingresos', 'ganancias', 'dinero recibido'],
+    'EXTRANJERO': ['fuera del pais', 'internacional', 'exterior', 'extranjero'],
+    'EXOGENA': ['medios magneticos', 'informacion exogena', 'reporte de informacion', 'exogena'],
+    'RUT': ['registro unico tributario', 'rut'],
+    'ACTIVOS': ['bienes', 'propiedades', 'activos', 'patrimonio'],
+    'PASIVOS': ['deudas', 'obligaciones', 'pasivos', 'prestamos'],
+    'FICTICIO': ['simulado', 'irreal', 'fachada', 'ficticio', 'falso', 'falsa'],
+    'RETENCION': ['retefuente', 'retencion en la fuente', 'retencion'],
+    'TIMBRE': ['impuesto de timbre', 'timbre']
+}
+
+# 2. Pre-compilamos las Regex UNA SOLA VEZ al iniciar el script
+PATRONES_LEMAS = []
+for raiz, variaciones in DICCIONARIO_LEMAS_RAW.items():
+    # Ordenamos de mayor a menor longitud para evitar reemplazos parciales incorrectos
+    variaciones.sort(key=len, reverse=True)
+    lista_regex = [re.escape(v) for v in variaciones]
+    # Compilamos: \b asegura palabra completa, IGNORECASE da velocidad
+    patron = re.compile(r'\b(' + '|'.join(lista_regex) + r')\b', re.IGNORECASE)
+    PATRONES_LEMAS.append((patron, raiz))
+
+def lematizar_artesanal(texto):
+    """
+    Versión OPTIMIZADA: Usa patrones pre-compilados globalmente.
+    Es ~100 veces más rápida que la versión original.
+    """
+    if not texto: return ""
     texto_procesado = texto 
-    
-    for raiz, variaciones in diccionario_lemas.items():
-        # Creamos una expresión regular que busque cualquiera de las variaciones
-        # \b asegura que sean palabras completas (evita reemplazar 'comprado' dentro de 'comprador')
-        lista_regex = [re.escape(v) for v in variaciones]
-        patron = r'\b(' + '|'.join(lista_regex) + r')\b'
-        
-        # Reemplazamos cualquier variación encontrada por la RAIZ
-        texto_procesado = re.sub(patron, raiz, texto_procesado)
-            
+    for patron, raiz in PATRONES_LEMAS:
+        texto_procesado = patron.sub(raiz, texto_procesado)
     return texto_procesado
 
 def detectar_negacion_cercana(texto, termino, ventana=3):
@@ -573,13 +582,33 @@ def seleccionar_modelo_ia(root):
         cliente = ollama.Client(host='http://127.0.0.1:11434')
         respuesta = cliente.list()
         
-        lista = respuesta.get('models', [])
+        # --- MODIFICACIÓN: Extracción robusta compatible con objetos y diccionarios ---
+        # Detectar si 'respuesta' es objeto (tiene atributo .models) o dict
+        lista = respuesta.models if hasattr(respuesta, 'models') else respuesta.get('models', [])
+        
         for m in lista:
-            if isinstance(m, dict):
+            nombre = None
+            # 1. Si es objeto (versiones nuevas de la librería)
+            if hasattr(m, 'model'):
+                nombre = m.model
+            elif hasattr(m, 'name'):
+                nombre = m.name
+            # 2. Si es diccionario (versiones viejas o raw)
+            elif isinstance(m, dict):
                 nombre = m.get('name', m.get('model', ''))
-                if nombre: modelos_disponibles.append(nombre)
+            
+            if nombre:
+                modelos_disponibles.append(nombre)
             else:
-                modelos_disponibles.append(str(m))
+                # 3. Fallback: Intentar limpiar si viene como string sucio
+                s_sucio = str(m)
+                if "model='" in s_sucio: # Detectar formato repr()
+                    try:
+                        import re
+                        match = re.search(r"model='([^']+)'", s_sucio)
+                        if match: modelos_disponibles.append(match.group(1))
+                    except: pass
+    
         
         print(f"DEBUG: Modelos encontrados: {len(modelos_disponibles)}")
         
@@ -657,48 +686,87 @@ def seleccionar_modelo_ia(root):
 
 def consultar_contexto_ia(texto, modelo):
     """
-    Envía el hecho denunciado a la IA para obtener contexto y años.
-    No decide, solo enriquece.
+    Envía el hecho denunciado a la IA. 
+    MODIFICADO: Prompt enriquecido para dar contexto detallado (infracciones, impuestos, obligaciones)
+    y lógica de extracción mejorada para respuestas multilínea.
     """
+    # 1. Validación estricta
+    if not modelo or not str(modelo).strip():
+        return "Error: Modelo no definido.", []
+
+    # Prompt diseñado para generar un análisis contextual rico
     prompt = f"""
-    Actúa como un asistente experto en fiscalización tributaria y aduanera de Colombia. 
-    Tu tarea NO es juzgar, sino extraer contexto técnico y años implícitos para ayudar a un algoritmo de clasificación.
+    Actúa como un Auditor Fiscal Experto y Analista de Cumplimiento Normativo. Tu trabajo es analizar textos de denuncias y determinar objetivamente si existen méritos para una conducta sancionable basada EXCLUSIVAMENTE en las reglas proporcionadas.; No me des referencias normativas o leyes; No referencies normas o leyes que no sean del ámbito fiscal colombiano.
     
-    Analiza el siguiente hecho denunciado: "{texto}"
+    
+    Hecho Denunciado: "{texto}"
 
-    1. Extrae términos técnicos clave que definan si es Tributario, Aduanero o Cambiario (Ej: "Omisión", "Contrabando", "Divisas").
-    2. Identifica todos los años fiscales mencionados explícita o implícitamente (Ej: "año pasado" si hoy es 2025 sería 2024).
+    Instrucciones:
+    1. Analiza el "Hecho Denunciado" buscando palabras clave y contextos semánticos que coincidan con las "reglas_conclusion".
+    2. Ignora información irrelevante (emociones del denunciante).
+    3. Evalúa si el hecho encaja OBJETIVAMENTE en alguna conducta sancionable.
+    4. Si hay ambigüedad o falta de información, inclínate por "No Clasificado"
+    5. Extrae los años fiscales mencionados.
 
-    Responde ESTRICTAMENTE con este formato:
-    CONTEXTO: [Palabras clave técnicas separadas por espacio]
-    AÑOS: [Año1, Año2, ...]
+    Responde ESTRICTAMENTE con este formato (asegúrate de incluir las etiquetas):
+    LECTURA_IA:
+    [Aquí tu análisis detallado y contextual]
+    AÑOS: [Año1, Año2]
     """
     
     try:
-        response = ollama.chat(model=modelo, messages=[
+        # 2. Limpieza del nombre del modelo
+        modelo_str = str(modelo).strip()
+        if "model='" in modelo_str:
+            import re
+            match = re.search(r"model='([^']+)'", modelo_str)
+            if match: modelo_str = match.group(1)
+        
+        # 3. Cliente explícito
+        cliente = ollama.Client(host='http://127.0.0.1:11434')
+        
+        response = cliente.chat(model=modelo_str, messages=[
             {'role': 'user', 'content': prompt},
         ])
+        
+        if not response or 'message' not in response:
+            return "Error: Respuesta vacía de Ollama", []
+
         respuesta = response['message']['content']
         
-        # Procesamiento simple de la respuesta
+        # 4. Procesamiento ROBUSTO (Captura bloques de texto multilínea)
         contexto_extra = ""
         anios_extra = []
         
-        lines = respuesta.split('\n')
-        for line in lines:
-            if "CONTEXTO:" in line.upper():
-                contexto_extra = line.split(':')[1].strip()
-            if "AÑOS:" in line.upper():
-                partes_anios = line.split(':')[1].replace('[','').replace(']','').split(',')
-                for a in partes_anios:
-                    clean_a = re.sub(r'\D', '', a) # Solo dígitos
-                    if len(clean_a) == 4:
-                        anios_extra.append(clean_a)
-                        
+        # Usamos expresiones regulares con flag DOTALL para capturar saltos de línea
+        import re
+        
+        # Capturar todo lo que está después de LECTURA_IA: hasta encontrar AÑOS: o el final
+        match_lectura = re.search(r'LECTURA_IA:?(.*?)(?:AÑOS:|AÑOS_DETECTADOS:|$)', respuesta, re.DOTALL | re.IGNORECASE)
+        if match_lectura:
+            contexto_extra = match_lectura.group(1).strip()
+        else:
+            # Fallback: Si la IA no puso la etiqueta LECTURA_IA, tomamos todo el texto antes de AÑOS
+            partes = re.split(r'AÑOS:|AÑOS_DETECTADOS:', respuesta, flags=re.IGNORECASE)
+            contexto_extra = partes[0].strip()
+
+        # Capturar los AÑOS buscando la etiqueta
+        match_anios = re.search(r'(?:AÑOS:|AÑOS_DETECTADOS:)(.*)', respuesta, re.DOTALL | re.IGNORECASE)
+        if match_anios:
+            texto_anios = match_anios.group(1)
+            # Extraer solo secuencias de 4 dígitos que parezcan años
+            anios_extra = re.findall(r'\b(20\d{2})\b', texto_anios)
+
+        # Si por alguna razón quedó vacío, devolvemos la respuesta cruda para no perder info
+        if not contexto_extra:
+            contexto_extra = respuesta
+
         return contexto_extra, anios_extra
+
     except Exception as e:
-        print(f"Error consultando IA: {e}")
-        return "", []
+        print(f"Error consultando IA con modelo '{modelo}': {e}")
+        return f"Error IA: {str(e)}", []
+
 
 
 
@@ -1223,1015 +1291,195 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
                 return
 
         print(f"✅ EXITO: Datos cargados. Filas a procesar: {len(df)}", flush=True)
-        print("DEBUG: Leyendo reglas de negocio (Espere un momento, no cierre la ventana)...", flush=True)
-
 
     except Exception as e:
         print(f"❌ ERROR CRÍTICO AL LEER EL ARCHIVO: {e}", flush=True)
         return
 
-        print("DEBUG: Cargando reglas de negocio y sinónimos (Espere un momento)...", flush=True)
+    print("DEBUG: Cargando reglas de negocio y sinónimos (Espere un momento)...", flush=True)
 
 
     
 
 
 
-        # Diccionario de sinónimos para hacer la búsqueda más robusta
-        sinonimos = {
-            'reportar': ['reportar', 'transmitir', 'enviar', 'remitir', 'comunicar', 'reportado'],
-            'informacion': ['informacion', 'datos', 'reporte', 'exogena', 'informacion'],
-            'cambiario': ['cambiario', 'divisas', 'moneda'],
-            'pagar': ['pagar', 'consignar', 'transferir', 'cancelar'],
-            'mercancia': ['mercancia', 'productos', 'bienes', 'articulos'],
-            'documentacion': ['documentacion', 'documentos', 'papeles'],
-            'importar': ['importar', 'importando'],
-            'exportar': ['exportar', 'exportando'],
-            'canalizar': ['canalizar', 'canaliza'],
-            'transmitir': ['transmitir', 'transmitio', 'enviando'],
-            'recibir': ['recibir', 'recibio'],
-            'evadir': ['evadir', 'evasion', 'evadiendo'],
-            'ingresos': ['ingresos', 'ganancias', 'rentas'],
-            'gastos': ['gastos', 'costos', 'deducciones'],
-            'contrabando': ['contrabando', 'mercancia', 'ilegal', 'extranjera'],
-            'omiso': ['no presento', 'no ha presentado', 'se encuentra omiso', 'no ha cumplido con el deber de declarar', 'no ha declarado', 'falta por declarar','dejo de pagar'],
-            'inscribir': ['inscrito', 'inscribirse']
-        }
+    # Diccionario de sinónimos para hacer la búsqueda más robusta
+    sinonimos = {
+        'reportar': ['reportar', 'transmitir', 'enviar', 'remitir', 'comunicar', 'reportado'],
+        'informacion': ['informacion', 'datos', 'reporte', 'exogena', 'informacion'],
+        'cambiario': ['cambiario', 'divisas', 'moneda'],
+        'pagar': ['pagar', 'consignar', 'transferir', 'cancelar'],
+        'mercancia': ['mercancia', 'productos', 'bienes', 'articulos'],
+        'documentacion': ['documentacion', 'documentos', 'papeles'],
+        'importar': ['importar', 'importando'],
+        'exportar': ['exportar', 'exportando'],
+        'canalizar': ['canalizar', 'canaliza'],
+        'transmitir': ['transmitir', 'transmitio', 'enviando'],
+        'recibir': ['recibir', 'recibio'],
+        'evadir': ['evadir', 'evasion', 'evadiendo'],
+        'ingresos': ['ingresos', 'ganancias', 'rentas'],
+        'gastos': ['gastos', 'costos', 'deducciones'],
+        'contrabando': ['contrabando', 'mercancia', 'ilegal', 'extranjera'],
+        'omiso': ['no presento', 'no ha presentado', 'se encuentra omiso', 'no ha cumplido con el deber de declarar', 'no ha declarado', 'falta por declarar','dejo de pagar'],
+        'inscribir': ['inscrito', 'inscribirse']
+    }
 
        # Diccionario de palabras clave para la clasificación completa.
        # Contexto: Palabras que acompañan el hecho (15 pts c/u) 
        # Refuerzo: Detalles menores (5 pts c/u)
 
-        reglas_conclusion = {
-    'Aduanero': {
-        'reglas': {
-            'contrabando abierto': {
-                'Conducta': 'Aduanera',
-                'Conducta Sancionable': 'Contrabando abierto',
-                'Impuesto / Infracción': 'Infracción aduanera',
-                'Normatividad': 'Art. 294 y 295 del Decreto 1165 de 2019',
-                'Puntos de Auditoria': 'Proponer acción de control que permita establecer la legal procedencia de las mercancías',
-                'palabras_clave': [{'contrabando', 'mercancia de contrabando', 'mercancia', 'ingresan de contrabando', 'ingresa contrabando', 'mercancia iliegal', 'precios muy bajos', 'precios bajos', 'bajos precios'}],
-                'patrones_regex': [
-                    r"contrabando\s+abierto",
-                    r"mercanc[ií]a\s+sin\s+documentos",
-                    r"ingreso\s+ilegal\s+de\s+mercanc[ií]a"
-                ],
-                'palabras_determinantes': ['contrabando', 'ilegal', 'clandestino', 'sin levante'],
-                'palabras_contexto': ['trocha', 'paso fronterizo', 'policia fiscal', 'aprehension', 'mercancia'],
-                'palabras_refuerzo': ['bajos precios', 'barato', 'sin papeles', 'ocultamiento']
+    reglas_conclusion = {
+            'Aduanero': {
+                'reglas': {
+                    'contrabando abierto': {'Conducta': 'Aduanera', 'Conducta Sancionable': 'Contrabando abierto', 'Impuesto / Infracción': 'Infracción aduanera', 'Normatividad': 'Art. 294 y 295 del Decreto 1165 de 2019', 'Puntos de Auditoria': 'Proponer acción de control que permita establecer la legal procedencia de las mercancías', 'palabras_clave': [{'contrabando','mercancia de contrabando','ingresan de contrabando','ingresa contrabando','mercancia iliegal','precios muy bajos','precios bajos','bajos precios','precio muy inferior','contrabandeando'}]},
+                    'ejercer actividades aduaneras sin autorización ': {'Conducta': 'Aduanera', 'Conducta Sancionable': 'Ejercer actividades aduaneras sin autorización ', 'Impuesto / Infracción': 'Infracción aduanera', 'Normatividad': 'Art. 119 del Decreto 1165 de 2019', 'Puntos de Auditoria': 'Determinar la infracción dependiendo del tipo de usuario aduanero', 'palabras_clave': [{'ejercer actividades aduaneras','aduaneras sin autorizacion'}]},
+                    'el valor declarado de la mercancia no corresponde': {'Conducta': 'Aduanera', 'Conducta Sancionable': 'El valor declarado de la mercancía no corresponde', 'Impuesto / Infracción': 'Infracción aduanera', 'Normatividad': 'Art. 52 del Decreto 1165 de 2019', 'Puntos de Auditoria': 'Verificar las importaciones en los aplicativos', 'palabras_clave': [{'valor no corresponde','valor declarado','valor declarado no corresponde'}]},
+                    'errada clasificacion arancelaria': {'Conducta': 'Aduanera', 'Conducta Sancionable': 'Errada clasificacion arancelaria', 'Impuesto / Infracción': 'Infracción aduanera', 'Normatividad': 'Art. 119 del Decreto 1165 de 2019', 'Puntos de Auditoria': 'Verificación de la posición arancelaria y descripción de mercancía.', 'palabras_clave': [{'clasificación', 'clasificacion', 'arancelaria','clasificando'}]},
+                    'exportacion ficticia': {'Conducta': 'Aduanera', 'Conducta Sancionable': 'Exportación ficticia', 'Impuesto / Infracción': 'Infracción aduanera', 'Normatividad': 'Art. 31 del Decreto 920 de 2023', 'Puntos de Auditoria': 'Verificación de ingreso de divisas y existencia física de la mercancía.', 'palabras_clave': [{'exportacion', 'exportacion', 'exportacion ficticia','exportacion ficticio','exportacion fictisia','exportacion fictisio'}]},
+                    'incumplimiento de requisitos previos': {'Conducta': 'Aduanera', 'Conducta Sancionable': 'Incumplmineto de requisitos previos', 'Impuesto / Infracción': 'Infracción aduanera', 'Normatividad': 'Arts. 66 y 69 Decreto 920 de 2023', 'Puntos de Auditoria': 'Verificar las importaciones en los aplicativos.', 'palabras_clave': [{'requisitos previos','incumple requisitos previos','control aduanero','toda la cadena legal'}]},
+                    'incumplimiento de reglamentos tecnicos': {'Conducta': 'Aduanera', 'Conducta Sancionable': 'Incumplimiento de reglamentos tecnicos', 'Impuesto / Infracción': 'Infracción aduanera', 'Normatividad': 'Documento técnico de la entidad que regula', 'Puntos de Auditoria': 'Verificar las importaciones en los aplicativos y documentos tecnicos de la entidad que regula.', 'palabras_clave': [{'incumplimiento requisitos', 'etiquetado', 'reglamento tecnico','reglamentos tecnicos'}]},
+                    'suministrar informacion o documentacion inexacta o irregular': {'Conducta': 'Aduanera', 'Conducta Sancionable': 'Suministrar información o documentación inexacta o irregular', 'Impuesto / Infracción': 'Infracción aduanera', 'Normatividad': 'Arts. 66 y  69 Decreto 920 de 2023', 'Puntos de Auditoria':'Verificar las importaciones en los aplicativos.', 'palabras_clave': [{'documentos irregulares','documentacion irregular','documentos inexacta','lista de empaque'}]},
+                }
             },
-            'ejercer actividades aduaneras sin autorización ': {
-                'Conducta': 'Aduanera',
-                'Conducta Sancionable': 'Ejercer actividades aduaneras sin autorización ',
-                'Impuesto / Infracción': 'Infracción aduanera',
-                'Normatividad': 'Art. 119 del Decreto 1165 de 2019',
-                'Puntos de Auditoria': 'Determinar la infracción dependiendo del tipo de usuario aduanero',
-                'palabras_clave': [{'ejercer actividades aduaneras', 'aduaneras sin autorizacion'}],
-                'patrones_regex': [
-                    r"sin\s+autorizaci[oó]n\s+aduanera",
-                    r"opera\s+como\s+agencia\s+sin\s+serlo",
-                    r"no\s+habilitado\s+por\s+la\s+dian"
-                ],
-                'palabras_determinantes': ['no autorizado', 'sin habilitación', 'ilegalmente'],
-                'palabras_contexto': ['agencia de aduanas', 'usuario aduanero', 'intermediación'],
-                'palabras_refuerzo': ['usurpación', 'falsedad', 'sin registro']
+            'Cambiario': {
+                'reglas': {
+                    'canalizar operaciones diferentes a las autorizadas': {'Conducta': 'Cambiaria','Conducta Sancionable': 'Canalizar operaciones diferentes a las autorizadas','Impuesto / Infracción': 'Infraccion cambiaria','Normatividad': 'Art. 3 Decreto 2245 de 2011','Puntos de Auditoria': 'Verificar información exógena cambiaria.','palabras_clave': [{'canalizar operaciones','canaliza'}]},
+                    'ejercer actividades cambiarias sin autorización': {'Conducta': 'Cambiaria','Conducta Sancionable': 'ejercer actividades cambiarias sin autorización','Impuesto / Infracción': 'Infraccion cambiaria','Normatividad': 'Art. 3 Decreto 2245 de 2011','Puntos de Auditoria': 'Verificar información exógena cambiaria.','palabras_clave': [{'ejercer actividades cambiarias','cambiarias sin autorizacion'}]},
+                    'extinguir operaciones de obligatoria canalizacion por medios diferentes a los autorizados': {'Conducta': 'Cambiaria','Conducta Sancionable': 'Extinguir operaciones de obligatoria canalizacion por medios diferentes a los autorizados','Impuesto / Infracción': 'Infraccion cambiaria','Normatividad': 'Art. 3 Decreto 2245 de 2011','Puntos de Auditoria': 'Verificar información exógena cambiaria.','palabras_clave': [{'extinguir operaciones','medios diferentes','liquidar operaciones'}]},
+                    'no presentar o no transmitir al Banco de la República las operaciones': {'Conducta': 'Cambiaria','Conducta Sancionable': 'No presentar o no transmitir al Banco de la República las operaciones','Impuesto / Infracción': 'Infraccion cambiaria','Normatividad': 'Art. 3 Decreto 2245 de 2011','Puntos de Auditoria': 'Verificar información exógena cambiaria.','palabras_clave': [{'no ha presentado informacion al banco de la republica','no ha transmitido informacion al banco de la republica','no ha eviado informacion al banco de la republica'}]},
+                    'no presentar o no transmitir información exogena cambiaria a la DIAN': {'Conducta': 'Cambiaria','Conducta Sancionable': 'No presentar o no transmitir información exogena cambiaria a la DIAN','Impuesto / Infracción': 'Infraccion cambiaria','Normatividad': 'Art. 3 Decreto 2245 de 2011','Puntos de Auditoria': 'Verificar información exógena cambiaria.','palabras_clave': [{'no ha presentado informacion exogena cambiaria','no ha presentado exogena cambiaria','no ha transmitido informacion exogena cambiaria','no ha transmitido exogena cambiaria','informacion cambiaria'}]},
+                    'pagar o recibir pagos a través del mercado no cambiario por operaciones canalizables': {'Conducta': 'Cambiaria','Conducta Sancionable': 'Pagar o recibir pagos a través del mercado no cambiario por operaciones canalizables','Impuesto / Infracción': 'Infraccion cambiaria','Normatividad': 'Ley 2245 de 2011','Puntos de Auditoria': 'Verificar información exógena cambiaria.','palabras_clave':[{'canaliza','mercado cambiario','cambiario','no cambiario'}]},
+                    # Regla Cambiaria ajustada: exige "divisas" o "cambio".
+                    'realizar operaciones de compra y venta de divisas sin autorizacion': {'Conducta': 'Cambiaria','Conducta Sancionable': 'Realizar operaciones de compra y venta de divisas sin autorizacion','Impuesto / Infracción': 'Infraccion cambiaria','Normatividad': 'Art. 3 del Decreto 2245 de 2011','Puntos de Auditoria': 'Verificar que el profesional de cambio este autorizado.','palabras_clave':[{'compra divisas','compra de divisas','venta divisas','venta de divisas','divisas','compra venta sin autorizacion','operaciones de cambio'}]},
+                    'transmitir al Banco de la República en forma extemporánea': {'Conducta': 'Cambiaria','Conducta Sancionable': 'Transmitir al Banco de la República en forma extemporánea','Impuesto / Infracción': 'Infracción cambiaria','Normatividad': 'Art. 3 del Decreto 2245 de 2011','Puntos de Auditoria': 'Verificar en la exogena la existencia de cuentas de compensación.','palabras_clave':[{'banco de la republica','extemporanea al banco de la republica'}]},
+                    'transmitir a la DIAN información exogena cambiaria en forma extemporánea': {'Conducta': 'Cambiaria','Conducta Sancionable': 'Transmitir a la DIAN información exogena cambiaria en forma extemporánea','Impuesto / Infracción': 'Infraccion cambiaria','Normatividad': 'Art. 3 del Decreto 2245 de 2011','Puntos de Auditoria': 'Verificar en la exogena la existencia de cuentas de compensación.','palabras_clave':[{'exogena cambiaria','envia exogena cambiaria'}]},
+
+                }
             },
-            'el valor declarado de la mercancia no corresponde': {
-                'Conducta': 'Aduanera',
-                'Conducta Sancionable': 'El valor declarado de la mercancía no corresponde',
-                'Impuesto / Infracción': 'Infracción aduanera',
-                'Normatividad': 'Art. 52 del Decreto 1165 de 2019',
-                'Puntos de Auditoria': 'Verificar las importaciones en los aplicativos',
-                'palabras_clave': [{'valor no corresponde', 'valor declarado', 'valor declarado no corresponde'}],
-                'patrones_regex': [
-                    r"valor\s+declarado\s+inferior",
-                    r"subvaluaci[oó]n",
-                    r"precio\s+ostensiblemente\s+bajo"
-                ],
-                'palabras_determinantes': ['subvaluación', 'sobrevaluación', 'precio irreal'],
-                'palabras_contexto': ['importación', 'declaración de importación', 'valor en aduana', 'factura comercial'],
-                'palabras_refuerzo': ['irrisorio', 'adulterado', 'manipulado']
-            },
-            'errada clasificacion arancelaria': {
-                'Conducta': 'Aduanera',
-                'Conducta Sancionable': 'Errada clasificacion arancelaria',
-                'Impuesto / Infracción': 'Infracción aduanera',
-                'Normatividad': 'Art. 119 del Decreto 1165 de 2019',
-                'Puntos de Auditoria': 'Verificación de la posición arancelaria y descripción de mercancía.',
-                'palabras_clave': [{'clasificación', 'clasificacion', 'error', 'arancelaria', 'clasificando'}],
-                'patrones_regex': [
-                    r"subpartida\s+incorrecta",
-                    r"clasificaci[oó]n\s+err[oó]nea",
-                    r"tributo\s+menor\s+por\s+partida"
-                ],
-                'palabras_determinantes': ['mala clasificación', 'error de partida', 'partida incorrecta'],
-                'palabras_contexto': ['arancel', 'partida arancelaria', 'subpartida', 'descripción de mercancía'],
-                'palabras_refuerzo': ['evadir arancel', 'pagar menos', 'ajuste de valor']
-            },
-            'exportacion ficticia': {
-                'Conducta': 'Aduanera',
-                'Conducta Sancionable': 'Exportación ficticia',
-                'Impuesto / Infracción': 'Infracción aduanera',
-                'Normatividad': 'Art. 31 del Decreto 920 de 2023',
-                'Puntos de Auditoria': 'Verificación de ingreso de divisas y existencia física de la mercancía.',
-                'palabras_clave': [{'exportacion', 'ficticia', 'ficticio', 'fictisia', 'fictisio'}],
-                'patrones_regex': [
-                    r"exportaci[oó]n\s+ficticia",
-                    r"nunca\s+sali[oó]\s+la\s+mercanc[ií]a",
-                    r"simulaci[oó]n\s+de\s+exportaci[oó]n"
-                ],
-                'palabras_determinantes': ['ficticia', 'simulada', 'inexistente'],
-                'palabras_contexto': ['reintegro de divisas', 'dex', 'embarque', 'salida de mercancía'],
-                'palabras_refuerzo': ['fraude', 'cobrar iva', 'devolución de impuestos']
-            },
-            'incumplimiento de requisitos previos': {
-                'Conducta': 'Aduanera',
-                'Conducta Sancionable': 'Incumplmineto de requisitos previos',
-                'Impuesto / Infracción': 'Infracción aduanera',
-                'Normatividad': 'Arts. 66 y 69 Decreto 920 de 2023',
-                'Puntos de Auditoria': 'Verificar las importaciones en los aplicativos.',
-                'palabras_clave': [{'requisitos previos', 'incumple requisitos previos'}],
-                'patrones_regex': [
-                    r"sin\s+visto\s+bueno",
-                    r"falta\s+licencia\s+previa",
-                    r"sin\s+registro\s+de\s+importaci[oó]n"
-                ],
-                'palabras_determinantes': ['sin requisitos', 'no cumple previos', 'falta permiso'],
-                'palabras_contexto': ['visto bueno', 'licencia', 'registro', 'invima', 'ica'],
-                'palabras_refuerzo': ['restringido', 'prohibido', 'sin autorización']
-            },
-            'incumplimiento de reglamentos tecnicos': {
-                'Conducta': 'Aduanera',
-                'Conducta Sancionable': 'Incumplimiento de reglamentos tecnicos',
-                'Impuesto / Infracción': 'Infracción aduanera',
-                'Normatividad': 'Documento técnico de la entidad que regula',
-                'Puntos de Auditoria': 'Verificar las importaciones en los aplicativos y documentos tecnicos de la entidad que regula.',
-                'palabras_clave': [{'incumplimiento requisitos', 'etiquetado', 'reglamento tecnico', 'reglamentos tecnicos'}],
-                'patrones_regex': [
-                    r"mal\s+etiquetado",
-                    r"incumple\s+retie",
-                    r"sin\s+certificado\s+de\s+conformidad"
-                ],
-                'palabras_determinantes': ['reglamento técnico', 'norma técnica', 'etiquetado'],
-                'palabras_contexto': ['seguridad', 'calidad', 'certificado', 'norma'],
-                'palabras_refuerzo': ['riesgo', 'no apto', 'ilegal']
-            },
-            'suministrar informacion o documentacion inexacta o irregular': {
-                'Conducta': 'Aduanera',
-                'Conducta Sancionable': 'Suministrar información o documentación inexacta o irregular',
-                'Impuesto / Infracción': 'Infracción aduanera',
-                'Normatividad': 'Arts. 66 y 69 Decreto 920 de 2023',
-                'Puntos de Auditoria': 'Verificar las importaciones en los aplicativos.',
-                'palabras_clave': [{'documentos irregulares', 'documentacion irregular', 'documentos inexacta'}],
-                'patrones_regex': [
-                    r"informaci[oó]n\s+falsa",
-                    r"documentos?\s+adulterados?",
-                    r"datos\s+inexactos"
-                ],
-                'palabras_determinantes': ['inexacta', 'irregular', 'falsa'],
-                'palabras_contexto': ['documentación soporte', 'declaración', 'datos'],
-                'palabras_refuerzo': ['mentira', 'fraude', 'engaño']
+            'Tributario': {
+                'reglas': {                  
+                    'evade impuestos': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Evade Impuestos', 'Impuesto / Infracción': 'Revisión tributaria integral', 'Normatividad': 'Art. 647 E.T.', 'Puntos de Auditoria': 'Cruce de patrimonio, ingresos y gastos.', 
+                        'palabras_clave': [{'evade','evadir','evasion','evasión','evacion','evación','ventas', 'totales','no presenta','dejo de presentar','no presentó','no presento','no declaró','no declaro','evadiendo impuestos','evasion de impuestos','evasores','fraude','fraudulentos','evadiendo','no paga impuestos','no paga impuesto','no paga los impuestos','evada impuestos','en efectivo','evadido','recibe efectivo','recibe en efectivo','pago de impuestos','fraudulenta','bajar la base','robo de impuestos','base menor','investiguen','investigacion','omitiendo el pago los impuestos','evadieran impuestos','evasora fiscal','evasor fiscal','sin pago de impuestos','pagar menos impuestos','evasoras','pagar impuestos','evasor','tributan de acuerdo a la ley','temas de impuestos','nunca han sido reportadas','no dan facturas','sin factura','sin factura legal','sin factura de venta','bajar impuestos','bajar impuesto','debidamente declarados','sustanciales','formales','delito fiscal','evadiendo','carece de veracidad','abuso tributario','no declarar impuestos','patrimonio injustificado','no paga ningun impuesto','no pagan impuestos','no cancela impuesto','facturas falsas','eludir impuestos','normas tributarias','renta falsas','no es declarado','no los declaran','lavado','maquillados los estados financieros','transacciones no legales','disminuir el valor a pagar','evitar el pago','omite informacion','infrecciones tributarias','infracciones tributarias','evadir impuestos','no pago tributario','sin cumplir las obligaciones tributarias','nunca declaro impuestos','no lo declaran','no ha pagado impuestos'}],
+                    'palabras_negativas': ['me acusa', 'me denuncia', 'dice que yo', 'presuntamente', 'supuestamente', 'sin pruebas', 'falsa denuncia'], # EJEMPLO DE CONTEXTO NEGATIVO
+                    'palabras_refuerzo': ['es evidente', 'tengo pruebas', 'adjunto', 'sistematicamente', 'claramente']}, # EJEMPLO DE REFUERZO
+                    'extemporaneidad en la presentacion de las declaraciones': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Extemporaneidad en la presentacion de las declaraciones', 'Impuesto / Infracción': 'Declaración Extemporánea', 'Normatividad':'Arts. 641 - 642 - 645 y 804 E.T', 'Puntos de Auditoria':'Verificar la fecha de vencimiento establecida en el calendario tributario para la vigencia correspondiente y la fecha efectiva de presentación. Adicionalmente, revisar la prelación de saldos en el pago asociado a dicha declaración, conforme a lo dispuesto en el artículo 804 del Estatuto Tributario, con el propósito de corroborar si el pago realizado fue oportuno y suficiente para que la declaración produzca plenos efectos jurídicos', 'palabras_clave': [{'no calcula sancion','extemporanea','despues de la fecha'}]},
+                    'no declara activos en el exterior': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'No declara activos en el exterior', 'Impuesto / Infracción': 'Declaración Activos en el exterior', 'Normatividad':'Arts. 574 Num. 5, 607 y 643 E.T.', 'Puntos de Auditoria':'Verificar con fundamento en los documentos aportados como anexos a la denuncia la obligatoriedad del contribuyente de presentar la declaración de activos en el exterior por el o los periodos denunciados, de conformidad con lo establecido en el artículo 607 del Estatuto Tributario. A partir de dicha verificación, corresponderá determinar si el contribuyente estaba obligado a declarar y, en consecuencia, establecer la posible configuración de una conducta sancionable por la omisión en la presentación de la respectiva declaración.', 'palabras_clave': [{'activos en el exterior','fuera del pais','activos fuera del pais'}]},
+                    'no declara impuesto al consumo': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'No Declara Impuesto al Consumo', 'Impuesto / Infracción': 'Impuesto al consumo', 'Normatividad':'Arts. 512-1 y 643 E.T.', 'Puntos de Auditoria':'Verificar la responsabilidad del contribuyente frente al impuesto nacional al consumo, teniendo en cuenta los parámetros normativos según lo dispuesto en el artículo 437 parágrafo 3 y 512-1 del E.T. A partir de dicha verificación, identificar los periodos gravables en los cuales el contribuyente registra la obligación de presentar declaraciones del impuesto al consumo y, en consecuencia, determinar si existe omisión en la presentación de las correspondientes declaraciones', 'palabras_clave': [{'impuesto al consumo','no declara impuesto al consumo','impuesto nacional al consumo','impoconsumo'}]},
+                    'no declara impuesto al patrimonio': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'No Declara Impuesto al Patrimonio', 'Impuesto / Infracción': 'Impuesto al patrimonio', 'Normatividad':'Arts. 292-3 y 643 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado ostenta la calidad de sujeto pasivo del impuesto al patrimonio conformidad con lo establecido en el artículo 292-3 del Estatuto Tributario. A partir de dicha verificación identificar los periodos gravables en los cuales se configura la obligación formal de presentar la correspondiente declaración del impuesto al patrimonio y, en consecuencia, determinar si se presenta o no una conducta de omisión en el cumplimiento de dicha obligación tributaria.', 'palabras_clave': [{'impuesto al patrimonio'}]},
+                    'no declara iva': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'No declara IVA', 'Impuesto / Infracción': 'Impuesto sobre las ventas', 'Normatividad':'Arts. 600 y 643 E.T.', 'Puntos de Auditoria':'Verificar la correcta responsabilidad del contribuyente frente al impuesto sobre las ventas, teniendo en cuenta los parámetros normativos según lo dispuesto en el artículo 437, parágrafo 3. A partir de dicha verificación, identificar los periodos gravables en los cuales el contribuyente registra la obligación de presentar declaraciones de IVA y, en consecuencia, determinar si existe omisión en la presentación de las correspondientes declaraciones', 'palabras_clave': [{'no declara iva','no declara IVA', 'no cobra iva', 'no paga iva','recaudo de iva','recaudo del iva','no factura iva','no facturar iva','recaudo del iva','recaudo de iva','sin iva','recaudo del impuesto iva','mercancia sin iva','19%','bajar el iva','sin generar el impuesto','mal manejo en el iva','no cobran iva','hecho generador del iva','sin la generacion del iva','generacion del iva','factura con iva','evitar pagar iva','obligación de declarar el iva','recauda el iva','recauda iva','no lo paga','ni cobra iva','no paga iva','no paga el iva','no cobra iva','no cobra el iva','no reportan el iva','no reporta iva','reflejan el pago de iva','no pagar iva','no pagar impuesto de iva','a pagar de iva','con el pago del iva','con el pago de iva','nunca lo paga'}]},
+                    'no declara regimen simple de tributacion': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'Regimen simple de tributacion', 'Impuesto / Infracción': 'Declaración anual consolidada RST', 'Normatividad':'Arts. 910 y 643 E.T.', 'Puntos de Auditoria':'Verificar en el Registro Único Tributario – RUT si el contribuyente ostenta la responsabilidad de declarar bajo el Régimen Simple de Tributación de acuerdo con lo establecido en el artículo 910 del Estatuto Tributario, A partir de dicha verificación revisar la presentación de la respectiva declaración y el pago asociado a fin de corroborar el cumplimiento de la obligación formal y sustancial y establecer si se configura o no una conducta de omisión frente a esta obligación tributaria.', 'palabras_clave': [{'regimen simple de tributacion', 'no declara rst','no presenta rst','no declaro regimen simple de tributacion','rst'}]},
+                    'no declara impuestos saludables': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'Regimen simple de tributacion', 'Impuesto / Infracción': 'Declaración anual consolidada RST', 'Normatividad':'Arts. 910 y 643 E.T.', 'Puntos de Auditoria':'Verificar en el Registro Único Tributario – RUT si el contribuyente ostenta la responsabilidad de declarar impuestos saludables de acuerdo con lo establecido en el artículo 910 del Estatuto Tributario, A partir de dicha verificación revisar la presentación de la respectiva declaración y el pago asociado a fin de corroborar el cumplimiento de la obligación formal y sustancial y establecer si se configura o no una conducta de omisión frente a esta obligación tributaria.', 'palabras_clave': [{'comestibles','ultraprocesados','azucares','sodio','grasas','saturadas'}]},
+                    'no declara renta': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'No Declara Renta', 'Impuesto / Infracción': 'Renta y Complementarios', 'Normatividad':'Arts. 574 y 643 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado ostenta la calidad de sujeto pasivo del impuesto sobre la renta y complementarios. A partir de dicha verificación identificar los periodos gravables en los cuales se configura la obligación formal de presentar la correspondiente declaración del impuesto al patrimonio y, en consecuencia, determinar si se presenta o no una conducta de omisión en el cumplimiento de dicha obligación tributaria.', 'palabras_clave': [{'no paga impuestos','no declara renta','no presenta renta','no declara impuestos','no presenta declaracion de renta','omiso','omiso en renta','no presento','no presento declaración de renta','contribuyente impuesto sobre la renta','nunca ha declarado rentas','omision','no se declaro renta','si ha declarado','no declarar ante la dian','presentar la declaracion','no declaran','no declaracion','jamas han declarado','obligado a declarar','no ha declarado sus ingresos','no ha realizado la declaracion','presentar declaraciones'}]},
+                    'no declara retencion en la fuente': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'No declara retencion en la fuente', 'Impuesto / Infracción': 'Retención en la Fuente', 'Normatividad':' Arts. 368, 368-2 y 643 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto sobre la renta conforme a lo previsto en los artículos 368 y 368-2 del Estatuto Tributario, con el fin de establecer su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación determinar si se configura o no una conducta de omisión en la declaración y/o pago de las retenciones en la fuente', 'palabras_clave': [{'no declara retencion','no delcara retencion en la fuente'}]},
+                    'no efectua retencion en la fuente': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'no efectua retencion en la fuente', 'Impuesto / Infracción': 'Retención en la Fuente', 'Normatividad':' Arts. 368, 368-2,574 y 643 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto sobre la renta conforme a lo previsto en los artículos 368 y 368-2 del Estatuto Tributario, con el fin de establecer su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación determinar si se configura o no una conducta de omisión en la práctica y/o pago de las retenciones en la fuente', 'palabras_clave': [{'no efectua retencion','no retiene','no practica retencion','no efectua retencion','no esta practicando','no se esta practicando retencion','no efectuaron las retenciones','debian retenerme','no aplico las retenciones'}]},
+                    'no paga impuesto de timbre': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'No Paga Impuesto de Timbre', 'Impuesto / Infracción': 'Impuesto de timbre', 'Normatividad':'Arts. 519 y 643 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto de timbre de acuerdo a lo previsto en los articulos 519 y 539-1 del Estatuto Tributario, con el fin de establecer su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación determinar si se configura o no una conducta de omisión en la declaración y/o pago de las retenciones practicadas', 'palabras_clave': [{'impuesto de timbre', 'no paga impuesto de timbre','no cancela el impuesto de timbre','no realiza el pago del impuesto de timbre'}]},
+                    'no presenta informes precios de transferencia': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'No presenta informes precios de transferencia', 'Impuesto / Infracción': 'Declaración Informativa y/o documentación comprobatoria de precios de transferencia', 'Normatividad':'Arts. 260-1, 260-5, 260-9 y 260-11', 'Puntos de Auditoria':'Verificar con base en los anexos adjuntados a la respectiva denuncia la sujeción del contribuyente denunciado al régimen de precios de transferencia y, en consecuencia, establecer la obligatoriedad de presentar la documentación comprobatoria y la declaración informativa, conforme a lo dispuesto en los artículos 260-5 y 260-9 del Estatuto Tributario.', 'palabras_clave': [{'precios de transferencia', 'informe local','documentacion comprobatoria'}]},
+                    'retiene en la fuente y no consigna': {'Conducta': 'Incumplimiento de la Obligación Formal de Declarar', 'Conducta Sancionable': 'Retiene en la fuente y no consigna', 'Impuesto / Infracción': 'Retención en la Fuente', 'Normatividad':'Arts. 574 y 643 E-T', 'Puntos de Auditoria':'verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto sobre la renta, con el fin de establecer su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación se podrá determinar si se configura o no una conducta de omisión en la práctica, declaración y/o pago de las retenciones en la fuente.', 'palabras_clave': [{'no consigna la retencion','no consigna los valores retenidos','retiene y no paga','no paga retencion'}]},
+                    'cobra tarifas en iva diferentes': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Cobra tarifas en IVA diferentes a las legales', 'Impuesto / Infracción': 'Impuesto sobre las ventas', 'Normatividad':'468, 468-1, 468-3, 477 y 647 E.T.', 'Puntos de Auditoria':'Verificar, en concordancia con lo dispuesto en los artículos 468, 468-1, 468-3 y 477 del Estatuto Tributario, la tarifa aplicable del impuesto sobre las ventas (IVA) a las operaciones realizadas por el contribuyente, con el fin de establecer si se aplicaron correctamente las disposiciones normativas vigentes. A partir de esta verificación, determinar la existencia de una posible inexactitud derivada de la aplicación de tarifas diferentes a las legalmente establecidas.', 'palabras_clave': [{'tarifas diferentes','tarifa diferente','tarifa que no corresponde','a otra trifa','exentos de iva','exentos','excluidos','gravados con iva','cobro indebido del impuesto al valor agregado','cobro indebido del iva'}]},
+                    'consigna ingresos propios en cuentas de terceros': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Consigna ingresos propios en cuentas de terceros', 'Impuesto / Infracción': 'Impuesto sobre la renta, impuesto sobre las ventas e impuesto al consumo', 'Normatividad':'Art. 755-3 E.T.', 'Puntos de Auditoria':'Verificar los ingresos del contribuyente denunciado a partir de la información registrada en sus declaraciones tributarias, contrastándola con los movimientos bancarios reportados por el tercero que, según la denuncia, presuntamente estaría sirviendo como intermediario o canal para el flujo de los ingresos. El análisis deberá permitir identificar posibles inconsistencias, omisiones o desvíos en la declaración de ingresos frente a la realidad económica evidenciada en los movimientos financieros.', 'palabras_clave': [{'consigna ingresos de terceros','en cuentas de terceros','facilite mi cuenta','consignar dineros','consigna dinero'}]},
+                    'dinero depositados en paraisos fiscales': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Dinero depositados en paraisos fiscales', 'Impuesto / Infracción': 'Renta y Complementarios e impuesto al patrimonio', 'Normatividad':'Art. 239-1 E.T.', 'Puntos de Auditoria':'De acuerdo con los documentos anexos a la denuncia que sustentan un presunto ocultamiento de activos poseídos en el exterior, verificar la existencia de una posible omisión de activos por parte del contribuyente denunciado, contrastando la información allegada con lo declarado en renta y complmentarios y demás registros disponibles en las bases al acuales se tiene acceso.', 'palabras_clave': [{'paraiso', 'paraisos', 'paraisos fiscales', 'paraiso fiscal'}]},
+                    'doble facturacion': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Doble facturación', 'Impuesto / Infracción': 'Impuesto sobre la renta, impuesto sobre las ventas e impuesto al consumo', 'Normatividad':'Art. 647 Num. 1', 'Puntos de Auditoria':'De acuerdo con los anexos adjuntados a la denuncia, verificar si el contribuyente denunciado incurre en la práctica de ocultar ingresos mediante una presunta doble facturación, contrastando la información contenida en dichos anexos con la facturación efectivamente generada y reportada ante la administración tributaria.', 'palabras_clave': [{'doble facturacion'}]},
+                    'incluye costos no procedentes': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Incluye costos no procedentes', 'Impuesto / Infracción': 'Renta y Complementarios', 'Normatividad':'Art. 647 Num. 3 E.T.', 'Puntos de Auditoria':'Verificar, con base en los anexos y los hechos expuestos en la denuncia, si el contribuyente denunciado ha incluido en la declaración de renta y complementarios costos o gastos inexistentes, a fin de determinar una posible inexactitud en la información declarada.', 'palabras_clave': [{'costos','procedentes','deducciones','incluir','incluye','soporte de gastos','soporte para los gastos','deducibles inexistentes','bancarizacion','documento falso','documento que es falso','nunca realice','sin comprobante legal','gastos ficticios'}]},
+                    'incluye pasivos inexistentes': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Incluye pasivos inexistentes', 'Impuesto / Infracción': 'Renta y Complementarios e impuesto al patrimonio', 'Normatividad':'Art. 239-1 E.T.', 'Puntos de Auditoria':'De acuerdo con los documentos anexos a la denuncia que sustentan la posible conducta de declarar pasivos inexistentes, verificar esta situación contrastando la información allegada con lo declarado en renta y complmentarios y demás registros disponibles en las bases al acuales se tiene acceso.', 'palabras_clave': [{'pasivos','pasivo','pasivos inexistentes','obligaciones inexistentes'}]},
+                    'no declara retención en la fuente correctamente': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'no declara retención en la fuente correctamente', 'Impuesto / Infracción': 'Retención en la fuente', 'Normatividad':'Art. 647 Num. 2', 'Puntos de Auditoria':'Conforme a lo establecido en los artículos 368 y 368-2 del Estatuto Tributario, corresponde verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto sobre la renta, con el fin de determinar su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación, se deberá analizar la coherencia entre las bases sujetas a retención registradas en las declaraciones de retención en la fuente (costos y gastos) y los montos efectivamente retenidos, con el propósito de identificar posibles inconsistencias.', 'palabras_clave': [{'no declara retencion correctamente','no reporta retenciones','no realizo la presentacion de las retenciones'}]},
+                    'no declara impuesto de timbre correctamente': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'no declara impuesto de timbre correctamente', 'Impuesto / Infracción': 'Impuesto de timbre nacional', 'Normatividad':'Arts. 519 y 647 Num. 2', 'Puntos de Auditoria':'Conforme a lo previsto en el artículo 519 del Estatuto Tributario, corresponde verificar si el contribuyente denunciado cumple con el hecho generador del impuesto al timbre nacional. A partir de esta verificación, se deberá analizar la coherencia entre la configuración del hecho generador y las retenciones practicadas, con el propósito de identificar posibles inconsistencias o incumplimientos frente a esta obligación tributaria.', 'palabras_clave': [{'timbre'}]},
+                    'omite activos': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Omite activos', 'Impuesto / Infracción': 'Renta y Complementarios e impuesto al patrimonio', 'Normatividad':'Art. 239-1 E.T.', 'Puntos de Auditoria':'De acuerdo con los documentos anexos a la denuncia que sustentan un presunto ocultamiento de activos, verificar la existencia de una posible omisión de activos por parte del contribuyente denunciado, contrastando la información allegada con lo declarado en renta y complmentarios y demás registros disponibles en las bases al acuales se tiene acceso.', 'palabras_clave': [{'omitir activos','omite activos','activos','activo','se ha declarado'}]},
+                    'omite ingresos': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Omite Ingresos', 'Impuesto / Infracción': 'Impuesto sobre la renta, impuesto sobre las ventas e impuesto al consumo', 'Normatividad':'Art. 647 E.T.', 'Puntos de Auditoria':'Verificar, a partir de los cruces de información entre las declaraciones de renta, retención en la fuente, impuesto sobre las ventas (IVA) e información exógena tributaria, la consistencia de las cifras registradas en dichas declaraciones, con el fin de establecer la coherencia en la determinación y declaración de los ingresos del contribuyente denunciado.','palabras_clave':[{'omite ingresos'},{'omision de ingresos'},{'no declara ingresos'},{'oculta ingresos','no declara todos los ingresos','no declaran todos los ingresos','recibe intereses','recibe arrendamientos','ingresos declarados debidamente','ingresos declarados indebidamente','sin factura','ingresos fueron mayores','ingresos no declarados','ingresos inferiores','facturando un menor valor','no es declarado','no declaran todos los ingresos','no los declaran','no reporta ningun ingreso','de lo ingresado','sus ingresos'}]},
+                    'costos o gastos originados con Proveedor ficticio': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Costos o gastos originados con Proveedor ficticio', 'Impuesto / Infracción': 'Renta y Complmentarios', 'Normatividad':'Art. 647-3 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado registra operaciones con terceros incluidos en las resoluciones de declaratoria de proveedores ficticios emitidas por la Subdirección de Fiscalización Tributaria, con el fin de determinar la cuantía de dichas operaciones y establecer los montos que podrían considerarse presuntamente inexactos','palabras_clave':[{'proveedor ficticio'}]},
+                    'retiene en la fuente a tarifas diferentes a las legales': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Retiene en la fuente a tarifas diferentes a las legales', 'Impuesto / Infracción': 'Retención en la Fuente', 'Normatividad':'Art. 647 Num. 2', 'Puntos de Auditoria':'Verificar, en concordancia con lo dispuesto en los artículos 392, 395 y 401 del Estatuto Tributario la tarifa de retención en la fuente aplicable a las operaciones realizadas por el contribuyente, con el fin de establecer si se aplicaron correctamente las disposiciones normativas vigentes. A partir de esta verificación, determinar la existencia de una posible inexactitud derivada de la aplicación de tarifas diferentes a las legalmente establecidas','palabras_clave':[{'aplica retencion en la fuente con tarifas distintas','tarifas diferentes','efectua retenciones en la fuente con tarifas','practica retención en la fuente a una tarifa','realiza retencion en la fuente con una tarifa'}]},
+                    'solicita beneficios fiscales inexistentes': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Solicita beneficios fiscales inexistentes', 'Impuesto / Infracción': 'Renta y Complementarios', 'Normatividad':'Art. 647 Num. 3 E.T.', 'Puntos de Auditoria':'Verificar, con base en el hecho denunciado y los anexos aportados, si el contribuyente ha aplicado exenciones o beneficios tributarios sin cumplir los requisitos establecidos en la normativa vigente. A partir de esta verificación, determinar la posible existencia de una presunta inexactitud en sus declaraciones tributarias.', 'palabras_clave': [{'exenciones', 'beneficios fiscales','beneficios tributarios'}, {'beneficio tributario','exenciones tributarias'}]},
+                    'inexactitud declaraciones tributarias': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'inexactitud declaraciones tributarias', 'Impuesto / Infracción': 'Renta y Complementarios', 'Normatividad':'Art. 23, 13-1, 23-2 y 647 Num. 6 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado a partir de esta verificación, determinar la posible existencia de una presunta inexactitud en sus declaraciones tributarias.', 'palabras_clave': [{'sin la firma','inexactos','inexacto','inexactitud','presenta con información erronea'}]},
+                    'inexactitud declaracion ingresos y patrimonio': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'inexactitud declaracion ingresos y patrimonio', 'Impuesto / Infracción': 'Renta y Complementarios', 'Normatividad':'Art. 23, 13-1, 23-2 y 647 Num. 6 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado tiene la obligación de presentar la declaración de ingresos y patrimonio, conforme a los parámetros establecidos en la normativa tributaria vigente. A partir de esta verificación, determinar la posible existencia de una presunta inexactitud en sus declaraciones tributarias.', 'palabras_clave': [{'ingresos y patromonio'}]},
+                    'utiliza documentos presuntamente falsos': {'Conducta': 'Inexactitud en las declaraciones tributarias', 'Conducta Sancionable': 'Utiliza documentos presuntamente falsos', 'Impuesto / Infracción': 'Impuesto sobre la renta', 'Normatividad':'Art. 647 Num. 6 E.T.', 'Puntos de Auditoria':'Verificar la realidad económica de las operaciones efectuadas por el contribuyente denunciado, con el propósito de establecer la procedencia de los costos y deducciones imputados en sus declaraciones tributarias, conforme a los principios de causalidad, necesidad y proporcionalidad previstos en la normativa fiscal vigente, y sustentados en documentos que cumplan con los requisitos formales y sustanciales exigidos para su aceptación tributaria.','palabras_clave': [{'documentos falsos','documento falso','documentos irregulares'}]},
+                    'no factura': {'Conducta': 'Facturación', 'Conducta Sancionable': 'No factura', 'Impuesto / Infracción': 'Factura Electrónica', 'Normatividad':'Arts. 615 y 652-1 E.T. - Res. 165/2023', 'Puntos de Auditoria':'Verificar, de acuerdo con los requerimientos establecidos en la normativa tributaria vigente, si el contribuyente denunciado se encuentra obligado a expedir factura electrónica de venta o documentos equivalentes. A partir de dicha verificación, determinar la posible omisión en el cumplimiento del deber formal de expedición de dichos documentos.',
+                                  'palabras_clave': [{'anomalias en las facturas','sin expedir ningun tipo de factura','no expide una factura','no factura','no factura legalmente','no expide factura','no emite factura','no emiten factura','no emite factura electronica','no da factura', 'sistema de facturacion electronica', 'sistema de facturacion','no emitieron','recibos de caja','recibo de caja','no me da recibo','no recibir las facturas','le emite factura','no hace facturas','no hace factura','facturar electronicamente','me la enviaban','no es una factura electronica','nunca recibieron en su correo electronico estas facturas','solicitando la factura','resolucion vencida','de mi factura','se niega a generar factura','nunca me han entregado','no me envian','no expiden factura electronica','no expiden ningun tipo de factura','solicite la factura','expedir una factura','no entregan factura','no entrega factura','no los facturan','niega a presentar la factura','no necesitaba factura','factura generada','no dan facturas','no dan factura','no dan la factura','irregularidades en la facturacion','irregularidades en la factura','sin la respectiva factura','factura cuando el cliente se lo exige','no les aportaron la factura','hemos solicitado la factura','ellos no generaban factura','ni de venta','facturas manuales','no expedicion de la factura','me enviarian una factura','nunca entregan','no va a generar las facturas','dudo que esten facturando','exigi la factura','no llego','ni se emiten facturas','no cumple con los parametros','la factura no es original','no estan expidiendo','correspondiente factura','no me las remiten','no me la remiten','facturacion electronica','obligaciones tributarias','por un valor diferente','no me expidieron factura','no emitian factura','no pueden generar facturas','se niega a entregarme','me la enviarian','no expedian factura','solicitar la factura','no entrega factura','no la generan','jamas dan factura','no entrega ningun tipo de factura','se negaron a entregarla','no emitir factura','factura de papel','no me la envia','no me quisieron entregar','se niegan a entregar','no han entregado','al solicitarla','no se esta expidiendo','no se entrega factura','no emiten','no tiene factura','no emitirla','no emitirlas','no la mandaron','no expedicion de factura','no me proporcionaron','entregaron la factura','entregaron factura','a entregar','no me quiere','no esta entregando','no me han proporcionado',' no ha enviado','no realiza factura','no nos podian generar','no podian generar','sin que me entregaran'}],
+                                  'palabras_negativas': ['si factura', 'siempre entrega', 'entrega factura', 'expide correctamente', 'factura legal'], # EJEMPLO
+                                  'palabras_refuerzo': ['nunca entrega', 'se niega a', 'le pedi y no me dio', 'compra sin factura', 'no me dio factura','no puede expedir']}, # EJEMPLO
+                    'factura sin requisitos': {'Conducta': 'Facturación', 'Conducta Sancionable': 'Factura sin requisitos', 'Impuesto / Infracción': 'Factura Electrónica', 'Normatividad':'Arts. 615 y 652 E.T. - Res. 165/2023', 'Puntos de Auditoria':'Revisión de la información mínima de la factura.','palabras_clave': [{'irregularidades en facturacion','sin requisitos','sin el lleno de requisitos','con todos los requisitos','mismo numero','comprado a mi nombre','factura falsa','facturacion falsa','no realice compras','facturas suministradas','clientes que no existen','discrimina el iva','datos correctos','nunca he comprado','facturacion indebida','compras no realizadas','facturas electronicas adulteradas','facturas electronicas a mi nombre','nota credito','nunca compre','no se realizaron las compras','yo no he comprado','irregularidad en la facturacion','recibido facturacion','las facturas vienen con mi numero','no tenemos relaciones comerciales','no hice tal compra','no registro en la factura','cufe no aparece','desconozco las compras','se encuentra errado','codigo qr','documento errado','expidio factura sin mi consentimiento'}]},
+                    'errores envio informacion exogena': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'Errores envío información exógena', 'Impuesto / Infracción': 'Suministro información', 'Normatividad':'Arts. 631 y  651 E.T.', 'Puntos de Auditoria':'Verificar, de acuerdo con los requerimientos de suministro de información de relevancia tributaria y en contraste con los hechos denunciados y sus anexos, si la información transmitida por el contribuyente denunciado cumple con las especificaciones y requerimientos técnicos establecidos por la normativa vigente.','palabras_clave':[{'error informacion exogena','errores informacion exogena','errores exogena','error exogena','exogena erronea','mal diligenciado','erradamente la informacion'}]},
+                    'inscrito en el regimen de iva que no corresponde': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'Inscrito en el regimen de IVA que no corresponde', 'Impuesto / Infracción': 'Obligaciones formales', 'Normatividad':'Art. 658-3 E.T.', 'Puntos de Auditoria':'Verificar la realidad económica del contribuyente denunciado con el fin de establecer la correcta inscripción, actualización y correspondencia de sus obligaciones, calidades y atributos tributarios en el Registro Único Tributario (RUT), conforme a la normativa vigente.', 'palabras_clave': [{'inscrito','inscribir','regimen simplificado'}]},
+                    'lleva doble contabilidad': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'Lleva doble contabilidad', 'Impuesto / Infracción': 'Irregularidades en la contabilidad', 'Normatividad':'Art. 655 E.T.', 'Puntos de Auditoria':'De acuerdo con el hecho denunciado y los anexos aportados, verificar si el contribuyente denunciado incurre en irregularidades relacionadas con los libros de contabilidad, conforme a las disposiciones establecidas en el Código de Comercio y en la normativa tributaria vigente.','palabras_clave':[{'doble contabilidad','lleva doble','dos contabilidades','revisar contabilidad'}]},
+                    'no contabiliza todas sus operaciones': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'no contabiliza todas sus operaciones', 'Impuesto / Infracción': 'Irregularidades en la contabilidad', 'Normatividad':'Art. 655 E.T.', 'Puntos de Auditoria':'De acuerdo con el hecho denunciado y los anexos aportados, verificar si el contribuyente denunciado incurre en irregularidades contables derivadas de la omisión en el registro de todas las operaciones realizadas, conforme a lo dispuesto en el Código de Comercio y en la normativa tributaria vigente.','palabras_clave':[{'no registra','no contabiliza','todas sus operaciones','no esta registrado','acomodo las cifras','manipulan la contabilidad'}]},
+                    'no esta inscrito en el rut': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'No esta inscrito en el Registro Unico Tributario - RUT', 'Impuesto / Infracción': 'Obligaciones formales', 'Normatividad':'Art. 658-3 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente se encuentra debidamente inscrito en el Registro Único Tributario – RUT, con la inclusión de las responsabilidades, calidades y atributos tributarios que correspondan a su actividad económica y obligaciones fiscales, de conformidad con la normativa vigente.', 'palabras_clave': [{'no esta inscrito','no aparece inscrito','no se encuentra inscrito','no aparece registrado','no se encuentra debidamente inscrito','no tiene rut','documentacion','no estan formalizados','no esta formalizado'}]},
+                    'reportado sin vinculo comercial en exogena por terceros': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'reportado sin vinculo comercial en exogena por terceros', 'Impuesto / Infracción': 'Suministro información', 'Normatividad':'Arts. 631 y  651 E.T.', 'Puntos de Auditoria':'Verificar, de acuerdo con los requerimientos de suministro de información de relevancia tributaria y en contraste con los hechos denunciados y sus anexos, si la información transmitida por el contribuyente denunciado cumple con las especificaciones y requerimientos técnicos establecidos por la normativa vigente.','palabras_clave':[{'exogena de terceros','sin vinculo','me reporto','me informo','no conozco','corrija', 'corregir', 'no reconozco','mi informacion','reconozco','mi exogena','reporte realizado por','reporte hecho por','suplantado','suplantar','realizo reporte de informacion','reporte de informacion exogena','ningun vinculo','ningun vinculo comercial','operaciones que jamas realice','operaciones que nunca realice','compras a mi nombre','se hace a mi nombre','a nombre mio','me reportaron en medios magneticos','reporte errado a mi nombre','no son ciertos','otros conceptos','no es cierta','me reporta','ingresos que no me corresponden','resulta ser falsa','reportaron pago','nunca he recibido','reporto bajo mi cedula','no corresponde a la realidad','no correponde con la realidad','exogena falsa','error en la informacion','no son reales','ninguna relacion comercial','reportadas a mi nombre','informa de manera errada','movimientos reportados','no tengo relaciones comerciales','informacion falsa','datos inexistentes','reportada por terceros','errores en el reporte ante la dian','reporte erroneo en la informacion exogena','desconozco los montos reflejados','reportes ficticios','reporte ficticio','inconsistencias en la información exogena','suministrada por terceros','pagos irreales','bajo mi nombre','correccion','a mi nombre'}]},
+                    'no expide certificados de retencion': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'No Expide certificados de retencion en fuente', 'Impuesto / Infracción': 'Obligaciones formales', 'Normatividad':'Art. 667 E.T.', 'Puntos de Auditoria':'De acuerdo con el hecho denunciado y los anexos adjuntos, verificar si el contribuyente denunciado ha incumplido el deber formal de expedir los certificados de retención en la fuente a los que está obligado en calidad de agente retenedor, dentro de los plazos y condiciones establecidos por la normativa tributaria vigente.', 'palabras_clave': [{'no expide certificado','no emite certificado','no genera certificado','no entrega certificado','no proporciona certificado','certificados de retencion','certificados correspondientes','certificado de ingresos','certificados de retencion','certificado de retenciones','certificado de ingresos y retenciones','no fue certificada','expedido los certificados','no certifico las respectivas retenciones','certificado de retencion','respectivo certificado','nos emitan el certificado','se  niega a certificar'}]},
+                    'no lleva contabilidad': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'No lleva contabilidad', 'Impuesto / Infracción': 'Irregularidades en la contabilidad', 'Normatividad':'Art. 655 E.T.', 'Puntos de Auditoria':'De acuerdo con el hecho denunciado y los anexos aportados, verificar si el contribuyente denunciado incurre en irregularidades contables derivadas de la omisión de llevar contabilidad, conforme a lo dispuesto en el Código de Comercio y en la normativa tributaria vigente.','palabras_clave':[{'no lleva contabilidad','no lleva registros contables','no realiza registros contables','no tiene libros de contabilidad','ninguna contabilidad','no tiene libros contable'}]},
+                    'proveedor ficticio': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'proveedor ficticio', 'Impuesto / Infracción': 'Proveedor ficticio o insolvente', 'Normatividad':'Art. 671 E.T.', 'Puntos de Auditoria':'Verificar si el contribuyente denunciado registra operaciones con terceros incluidos en las resoluciones de declaratoria de proveedores ficticios emitidas por la Subdirección de Fiscalización Tributaria, con el fin de determinar la cuantía de dichas operaciones y establecer los montos que podrían considerarse presuntamente inexactos','palabras_clave':[{'proveedor ficticio'}]},
+                    'solicita devoluciones improcedentes': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'Solicita devoluciones improcedentes', 'Impuesto / Infracción': 'Improcedencia de las devoluciones y/o compensaciones', 'Normatividad':'Art. 670 E.T.', 'Puntos de Auditoria':'De acuerdo con el hecho denunciado y los anexos adjuntos, verificar si existen indicios que permitan determinar que el contribuyente denunciado utilizó documentos falsos o, mediante maniobras fraudulentas, obtuvo indebidamente una devolución o compensación tributaria.','palabras_clave':[{'devolucion','solicita devoluciones improcedentes','devoluciones improcedentes'}]},
+                    'no reporta información exógena': {'Conducta': 'Obligaciones diferentes a declarar y pagar', 'Conducta Sancionable': 'No reporta información exógena', 'Impuesto / Infracción': 'Suministro de información', 'Normatividad':'Arts. 631 y  651 E.T.', 'Puntos de Auditoria':'Verificar, de acuerdo con los requerimientos de suministro de información de relevancia tributaria y en contraste con los hechos denunciados y sus anexos, si el contribuyente denunciado cumplió con el deber formal de suministrar información exógena de relevancia tributaria bajo las especificaciones y requerimientos técnicos establecidos por la normativa vigente.','palabras_clave':[{'no reporta informacion exogena','no transmite informacion exogena','no transmitio informacion exogerna','presentar exogena','presentar informacion exogena','no ha presentado la informacion'}]},
+
+                }
             }
         }
-    },
-    'Cambiario': {
-        'reglas': {
-            'canalizar operaciones diferentes a las autorizadas': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'Canalizar operaciones diferentes a las autorizadas',
-                'Impuesto / Infracción': 'Infraccion cambiaria',
-                'Normatividad': 'Art. 3 Decreto 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar información exógena cambiaria.',
-                'palabras_clave': [{'canalizar operaciones', 'canaliza'}],
-                'patrones_regex': [
-                    r"canaliz[oó]\s+mal",
-                    r"operaci[oó]n\s+no\s+autorizada",
-                    r"mercado\s+cambiario\s+indebido"
-                ],
-                'palabras_determinantes': ['mal canalizado', 'no autorizado', 'desviado'],
-                'palabras_contexto': ['intermediario cambiario', 'cuenta de compensación', 'divisas'],
-                'palabras_refuerzo': ['infracción', 'irregularidad', 'violación cambiaria']
-            },
-            'ejercer actividades cambiarias sin autorización': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'ejercer actividades cambiarias sin autorización',
-                'Impuesto / Infracción': 'Infraccion cambiaria',
-                'Normatividad': 'Art. 3 Decreto 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar información exógena cambiaria.',
-                'palabras_clave': [{'ejercer actividades cambiarias', 'cambiarias sin autorizacion'}],
-                'patrones_regex': [
-                    r"casa\s+de\s+cambio\s+ilegal",
-                    r"cambista\s+de\s+la\s+calle",
-                    r"compra\s+venta\s+d[oó]lares\s+sin\s+permiso"
-                ],
-                'palabras_determinantes': ['sin permiso', 'no autorizado', 'ilegal'],
-                'palabras_contexto': ['profesional de cambio', 'divisas', 'compraventa'],
-                'palabras_refuerzo': ['clandestino', 'informal', 'lavado']
-            },
-            'extinguir operaciones de obligatoria canalizacion por medios diferentes a los autorizados': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'Extinguir operaciones de obligatoria canalizacion por medios diferentes a los autorizados',
-                'Impuesto / Infracción': 'Infraccion cambiaria',
-                'Normatividad': 'Art. 3 Decreto 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar información exógena cambiaria.',
-                'palabras_clave': [{'extinguir operaciones', 'medios diferentes', 'liquidar operaciones'}],
-                'patrones_regex': [
-                    r"pago\s+en\s+efectivo\s+exportaci[oó]n",
-                    r"no\s+us[oó]\s+banco",
-                    r"canalizaci[oó]n\s+omitida"
-                ],
-                'palabras_determinantes': ['no canalizó', 'efectivo', 'medio no autorizado'],
-                'palabras_contexto': ['importación', 'exportación', 'deuda externa', 'intermediarios'],
-                'palabras_refuerzo': ['evasión cambiaria', 'bolsillo', 'caja menor']
-            },
-            'no presentar o no transmitir al Banco de la República las operaciones': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'No presentar o no transmitir al Banco de la República las operaciones',
-                'Impuesto / Infracción': 'Infraccion cambiaria',
-                'Normatividad': 'Art. 3 Decreto 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar información exógena cambiaria.',
-                'palabras_clave': [{'no ha presentado informacion al banco de la republica', 'no ha transmitido informacion al banco de la republica', 'no ha eviado informacion al banco de la republica'}],
-                'patrones_regex': [
-                    r"no\s+report[oó]\s+al\s+banco",
-                    r"omisi[oó]n\s+reporte\s+banrep",
-                    r"sin\s+declaraci[oó]n\s+de\s+cambio"
-                ],
-                'palabras_determinantes': ['no transmitió', 'omitió reporte', 'sin registro'],
-                'palabras_contexto': ['banco de la república', 'banrep', 'operaciones cambiarias'],
-                'palabras_refuerzo': ['ocultamiento', 'sancionable', 'omiso']
-            },
-            'no presentar o no transmitir información exogena cambiaria a la DIAN': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'No presentar o no transmitir información exogena cambiaria a la DIAN',
-                'Impuesto / Infracción': 'Infraccion cambiaria',
-                'Normatividad': 'Art. 3 Decreto 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar información exógena cambiaria.',
-                'palabras_clave': [{'no ha presentado informacion exogena cambiaria', 'no ha presentado exogena cambiaria', 'no ha transmitido informacion exogena cambiaria', 'no ha transmitido exogena cambiaria', 'informacion cambiaria'}],
-                'patrones_regex': [
-                    r"no\s+present[oó]\s+ex[oó]gena\s+cambiaria",
-                    r"omiso\s+ex[oó]gena\s+cambiaria",
-                    r"falta\s+reporte\s+1059"
-                ],
-                'palabras_determinantes': ['cambiaria'],
-                'palabras_contexto': ['exogena cambiaria', 'dian', 'formatos'],
-                'palabras_refuerzo': []
-            },
-            'pagar o recibir pagos a través del mercado no cambiario por operaciones canalizables': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'Pagar o recibir pagos a través del mercado no cambiario por operaciones canalizables',
-                'Impuesto / Infracción': 'Infraccion cambiaria',
-                'Normatividad': 'Ley 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar información exógena cambiaria.',
-                'palabras_clave': [{'canaliza', 'mercado cambiario', 'cambiario', 'no cambiario'}],
-                'patrones_regex': [
-                    r"mercado\s+libre\s+para\s+importaciones",
-                    r"pago\s+por\s+fuera",
-                    r"no\s+us[oó]\s+imc"
-                ],
-                'palabras_determinantes': ['mercado negro', 'mercado libre', 'no canalizado'],
-                'palabras_contexto': ['canalizable', 'obligatoria canalización', 'divisas'],
-                'palabras_refuerzo': ['ilegalmente', 'por debajo', 'sin rastro']
-            },
-            'realizar operaciones de compra y venta de divisas sin autorizacion': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'Realizar operaciones de compra y venta de divisas sin autorizacion',
-                'Impuesto / Infracción': 'Infraccion cambiaria',
-                'Normatividad': 'Art. 3 del Decreto 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar que el profesional de cambio este autorizado.',
-                'palabras_clave': [{'compra divisas', 'compra de divisas', 'venta divisas', 'venta de divisas', 'divisas', 'compra venta sin autorizacion', 'operaciones de cambio'}],
-                'patrones_regex': [
-                    r"compraventa\s+divisas\s+ilegal",
-                    r"cambio\s+de\s+moneda\s+sin\s+permiso",
-                    r"negocio\s+de\s+divisas"
-                ],
-                'palabras_determinantes': ['sin autorización', 'ilegal', 'no profesional'],
-                'palabras_contexto': ['dólares', 'euros', 'efectivo', 'local comercial'],
-                'palabras_refuerzo': ['fachada', 'clandestino', 'lavado']
-            },
-            'transmitir al Banco de la República en forma extemporánea': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'Transmitir al Banco de la República en forma extemporánea',
-                'Impuesto / Infracción': 'Infracción cambiaria',
-                'Normatividad': 'Art. 3 del Decreto 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar en la exogena la existencia de cuentas de compensación.',
-                'palabras_clave': [{'banco de la republica', 'extemporanea al banco de la republica'}],
-                'patrones_regex': [
-                    r"reporte\s+tard[ií]o\s+banrep",
-                    r"fuera\s+de\s+plazo\s+banco",
-                    r"extempor[aá]neo\s+cambiario"
-                ],
-                'palabras_determinantes': ['extemporáneo', 'tarde', 'vencido'],
-                'palabras_contexto': ['fechas', 'plazos', 'banco de la república'],
-                'palabras_refuerzo': ['recurrente', 'siempre tarde', 'desorden']
-            },
-            'transmitir a la DIAN información exógena cambiaria en forma extemporánea': {
-                'Conducta': 'Cambiaria',
-                'Conducta Sancionable': 'Transmitir a la DIAN información exogena cambiaria en forma extemporánea',
-                'Impuesto / Infracción': 'Infraccion cambiaria',
-                'Normatividad': 'Art. 3 del Decreto 2245 de 2011',
-                'Puntos de Auditoria': 'Verificar en la exogena la existencia de cuentas de compensación.',
-                'palabras_clave': [{'exogena cambiaria', 'envia exogena cambiaria'}],
-                'patrones_regex': [
-                    r"ex[oó]gena\s+cambiaria\s+tarde",
-                    r"presentaci[oó]n\s+extempor[aá]nea\s+dian",
-                    r"fuera\s+de\s+fecha\s+ex[oó]gena"
-                ],
-                'palabras_determinantes': ['extemporaneidad', 'fuera de plazo', 'retraso'],
-                'palabras_contexto': ['calendario', 'trimestre', 'informacion cambiaria'],
-                'palabras_refuerzo': ['multa', 'sanción']
-            }
-        }
-    },
-    'Tributario': {
-        'reglas': {
-            'evade impuestos': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Evade Impuestos',
-                'Impuesto / Infracción': 'Revisión tributaria integral',
-                'Normatividad': 'Art. 647 E.T.',
-                'Puntos de Auditoria': 'Cruce de patrimonio, ingresos y gastos.',
-                'palabras_clave': [{'evade', 'evadir', 'evasion', 'evasión', 'evacion', 'evación', 'ventas', 'totales', 'no presenta', 'dejo de presentar', 'no presentó', 'no presento', 'no declaró', 'no declaro', 'evadiendo impuestos', 'evasion de impuestos', 'evasores', 'fraude', 'fraudulentos', 'evadiendo', 'no paga impuestos', 'no paga impuesto', 'no paga los impuestos', 'evada impuestos', 'en efectivo', 'evadido', 'recibe efectivo', 'recibe en efectivo', 'pago de impuestos', 'fraudulenta', 'bajar la base', 'robo de impuestos', 'base menor', 'investiguen', 'investigacion'}],
-                'patrones_regex': [
-                    r"evasi[oó]n\s+fiscal",
-                    r"no\s+paga\s+nada",
-                    r"fraude\s+tributario",
-                    r"oculta\s+ingresos"
-                ],
-                'palabras_determinantes': ['evasor', 'fraude', 'robo', 'ilegal'],
-                'palabras_contexto': ['impuestos', 'fiscalizacion'],
-                'palabras_refuerzo': ['no ha pagado impuestos']
-            },
-            'extemporaneidad en la presentacion de las declaraciones': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Extemporaneidad en la presentacion de las declaraciones',
-                'Impuesto / Infracción': 'Declaración Extemporánea',
-                'Normatividad': 'Arts. 641 - 642 - 645 y 804 E.T',
-                'Puntos de Auditoria': 'Verificar la fecha de vencimiento establecida en el calendario tributario para la vigencia correspondiente y la fecha efectiva de presentación. Adicionalmente, revisar la prelación de saldos en el pago asociado a dicha declaración, conforme a lo dispuesto en el artículo 804 del Estatuto Tributario, con el propósito de corroborar si el pago realizado fue oportuno y suficiente para que la declaración produzca plenos efectos jurídicos',
-                'palabras_clave': [{'no calcula sancion', 'extemporanea', 'despues de la fecha'}],
-                'patrones_regex': [
-                    r"present[oó]\s+tarde",
-                    r"declaraci[oó]n\s+vencida",
-                    r"fuera\s+del\s+calendario"
-                ],
-                'palabras_determinantes': ['extemporáneo', 'vencido', 'tardío'],
-                'palabras_contexto': ['fecha de vencimiento', 'plazo', 'calendario tributario'],
-                'palabras_refuerzo': ['sin sanción', 'intereses', 'mora']
-            },
-            'no declara activos en el exterior': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'No declara activos en el exterior',
-                'Impuesto / Infracción': 'Declaración Activos en el exterior',
-                'Normatividad': 'Arts. 574 Num. 5, 607 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar con fundamento en los documentos aportados como anexos a la denuncia la obligatoriedad del contribuyente de presentar la declaración de activos en el exterior por el o los periodos denunciados, de conformidad con lo establecido en el artículo 607 del Estatuto Tributario. A partir de dicha verificación, corresponderá determinar si el contribuyente estaba obligado a declarar y, en consecuencia, establecer la posible configuración de una conducta sancionable por la omisión en la presentación de la respectiva declaración.',
-                'palabras_clave': [{'activos en el exterior', 'fuera del pais', 'activos fuera del pais'}],
-                'patrones_regex': [
-                    r"cuentas\s+en\s+miami",
-                    r"propiedades\s+en\s+el\s+exterior",
-                    r"dinero\s+afuera"
-                ],
-                'palabras_determinantes': ['exterior', 'oculto'],
-                'palabras_contexto': ['panamá', 'estados unidos', 'cuentas bancarias', 'inversiones'],
-                'palabras_refuerzo': ['paraísos', 'offshore']
-            },
-            'no declara impuesto al consumo': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'No Declara Impuesto al Consumo',
-                'Impuesto / Infracción': 'Impuesto al consumo',
-                'Normatividad': 'Arts. 512-1 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar la responsabilidad del contribuyente frente al impuesto nacional al consumo, teniendo en cuenta los parámetros normativos según lo dispuesto en el artículo 437 parágrafo 3 y 512-1 del E.T. A partir de dicha verificación, identificar los periodos gravables en los cuales el contribuyente registra la obligación de presentar declaraciones del impuesto al consumo y, en consecuencia, determinar si existe omisión en la presentación de las correspondientes declaraciones',
-                'palabras_clave': [{'impuesto al consumo', 'no declara impuesto al consumo', 'impuesto nacional al consumo', 'impoconsumo'}],
-                'patrones_regex': [
-                    r"no\s+cobra\s+impoconsumo",
-                    r"evade\s+impuesto\s+al\s+consumo",
-                    r"restaurante\s+sin\s+impuestos"
-                ],
-                'palabras_determinantes': ['omiso consumo'],
-                'palabras_contexto': ['restaurante', 'bar', 'telefonía', 'vehículos'],
-                'palabras_refuerzo': ['impoconsumo', 'impuesto al consumo']
-            },
-            'no declara impuesto al patrimonio': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'No Declara Impuesto al Patrimonio',
-                'Impuesto / Infracción': 'Impuesto al patrimonio',
-                'Normatividad': 'Arts. 292-3 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente denunciado ostenta la calidad de sujeto pasivo del impuesto al patrimonio conformidad con lo establecido en el artículo 292-3 del Estatuto Tributario. A partir de dicha verificación identificar los periodos gravables en los cuales se configura la obligación formal de presentar la correspondiente declaración del impuesto al patrimonio y, en consecuencia, determinar si se presenta o no una conducta de omisión en el cumplimiento de dicha obligación tributaria.',
-                'palabras_clave': [{'impuesto al patrimonio'}],
-                'patrones_regex': [
-                    r"patrimonio\s+alto\s+no\s+declarado",
-                    r"evade\s+riqueza",
-                    r"oculta\s+bienes"
-                ],
-                'palabras_determinantes': ['riqueza', 'patrimonio líquido', 'omiso'],
-                'palabras_contexto': ['mil millones', 'propiedades', 'carros de lujo'],
-                'palabras_refuerzo': ['testaferros', 'ocultamiento', 'multimillonario']
-            },
-            'no declara iva': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'No declara IVA',
-                'Impuesto / Infracción': 'Impuesto sobre las ventas',
-                'Normatividad': 'Arts. 600 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar la correcta responsabilidad del contribuyente frente al impuesto sobre las ventas, teniendo en cuenta los parámetros normativos según lo dispuesto en el artículo 437, parágrafo 3. A partir de dicha verificación, identificar los periodos gravables en los cuales el contribuyente registra la obligación de presentar declaraciones de IVA y, en consecuencia, determinar si existe omisión en la presentación de las correspondientes declaraciones',
-                'palabras_clave': [{'no declara iva', 'no declara IVA', 'no cobra iva', 'no paga iva', 'recaudo de iva', 'recaudo del iva', 'no factura iva', 'no facturar iva', 'recaudo del iva', 'recaudo de iva', 'sin iva', 'recaudo del impuesto IVA', 'mercancia sin iva', '19%', 'bajar el iva'}],
-                'patrones_regex': [
-                    r"vende\s+sin\s+iva",
-                    r"no\s+factura\s+iva",
-                    r"se\s+queda\s+con\s+el\s+iva"
-                ],
-                'palabras_determinantes': ['omiso iva', 'responsable iva', 'no recaudado'],
-                'palabras_contexto': ['ventas', 'facturación', '19%', 'bienes gravados'],
-                'palabras_refuerzo': ['robo', 'apropiación', 'ilegal']
-            },
-            'no declara regimen simple de tributacion': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'Regimen simple de tributacion',
-                'Impuesto / Infracción': 'Declaración anual consolidada RST',
-                'Normatividad': 'Arts. 910 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar en el Registro Único Tributario – RUT si el contribuyente ostenta la responsabilidad de declarar bajo el Régimen Simple de Tributación de acuerdo con lo establecido en el artículo 910 del Estatuto Tributario, A partir de dicha verificación revisar la presentación de la respectiva declaración y el pago asociado a fin de corroborar el cumplimiento de la obligación formal y sustancial y establecer si se configura o no una conducta de omisión frente a esta obligación tributaria.',
-                'palabras_clave': [{'regimen simple de tributacion', 'no declara rst', 'no presenta rst', 'no declaro regimen simple de tributacion', 'rst'}],
-                'patrones_regex': [
-                    r"no\s+pag[oó]\s+anticipo\s+simple",
-                    r"omiso\s+rst",
-                    r"incumple\s+regimen\s+simple"
-                ],
-                'palabras_determinantes': ['rst', 'simple'],
-                'palabras_contexto': ['anticipo bimestral', 'declaración anual', 'tarifas'],
-                'palabras_refuerzo': ['exclusión','mora']
-            },
-            'no declara renta': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'No Declara Renta',
-                'Impuesto / Infracción': 'Renta y Complementarios',
-                'Normatividad': 'Arts. 574 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente denunciado ostenta la calidad de sujeto pasivo del impuesto sobre la renta y complementarios. A partir de dicha verificación identificar los periodos gravables en los cuales se configura la obligación formal de presentar la correspondiente declaración del impuesto al patrimonio y, en consecuencia, determinar si se presenta o no una conducta de omisión en el cumplimiento de dicha obligación tributaria.',
-                'palabras_clave': [{'no paga impuestos', 'no declara renta', 'no presenta renta', 'no declara impuestos', 'no presenta declaracion de renta', 'omiso', 'omiso en renta', 'no presento', 'no presento declaración de renta', 'contribuyente impuesto sobre la renta'}],
-                'patrones_regex': [
-                    r"nunca\s+ha\s+declarado\s+renta",
-                    r"omiso\s+en\s+renta",
-                    r"ingresos\s+superiores\s+al\s+tope"
-                ],
-                'palabras_determinantes': ['omiso', 'no declarante', 'evasor'],
-                'palabras_contexto': ['ingresos', 'patrimonio', 'movimientos bancarios', 'tarjetas de crédito'],
-                'palabras_refuerzo': ['mucho dinero', 'grandes ingresos', 'cero impuestos']
-            },
-            'no declara retencion en la fuente': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'No declara retencion en la fuente',
-                'Impuesto / Infracción': 'Retención en la Fuente',
-                'Normatividad': ' Arts. 368, 368-2 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto sobre la renta conforme a lo previsto en los artículos 368 y 368-2 del Estatuto Tributario, con el fin de establecer su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación determinar si se configura o no una conducta de omisión en la declaración y/o pago de las retenciones en la fuente',
-                'palabras_clave': [{'no declara retencion', 'no delcara retencion en la fuente'}],
-                'patrones_regex': [
-                    r"no\s+presenta\s+retefuente",
-                    r"omisi[oó]n\s+declaraci[oó]n\s+retenci[oó]n",
-                    r"formulario\s+350"
-                ],
-                'palabras_determinantes': ['omiso retención'],
-                'palabras_contexto': ['agente retenedor', 'pagos mensuales', 'honorarios', 'servicios'],
-                'palabras_refuerzo': []
-            },
-            'no efectua retencion en la fuente': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'no efectua retencion en la fuente',
-                'Impuesto / Infracción': 'Retención en la Fuente',
-                'Normatividad': ' Arts. 368, 368-2,574 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto sobre la renta conforme a lo previsto en los artículos 368 y 368-2 del Estatuto Tributario, con el fin de establecer su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación determinar si se configura o no una conducta de omisión en la práctica y/o pago de las retenciones en la fuente',
-                'palabras_clave': [{'no efectua retencion', 'no retiene', 'no practica retencion', 'no efectua retencion', 'no esta practicando', 'no se esta practicando retencion'}],
-                'patrones_regex': [
-                    r"paga\s+completo\s+sin\s+retenci[oó]n",
-                    r"no\s+me\s+descuenta",
-                    r"omite\s+practicar\s+retenci[oó]n"
-                ],
-                'palabras_determinantes': ['no retiene', 'sin descuento','sin retencion'],
-                'palabras_contexto': ['pagos laborales', 'compras', 'servicios', 'base gravable'],
-                'palabras_refuerzo': []
-            },
-            'no paga impuesto de timbre': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'No Paga Impuesto de Timbre',
-                'Impuesto / Infracción': 'Impuesto de timbre',
-                'Normatividad': 'Arts. 519 y 643 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto de timbre de acuerdo a lo previsto en los articulos 519 y 539-1 del Estatuto Tributario, con el fin de establecer su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación determinar si se configura o no una conducta de omisión en la declaración y/o pago de las retenciones practicadas',
-                'palabras_clave': [{'impuesto de timbre', 'no paga impuesto de timbre', 'no cancela el impuesto de timbre', 'no realiza el pago del impuesto de timbre'}],
-                'patrones_regex': [
-                    r"evade\s+timbre",
-                    r"contrato\s+sin\s+timbre",
-                    r"no\s+pag[oó]\s+impuesto\s+notarial"
-                ],
-                'palabras_determinantes': ['timbre', 'no pago', 'evasión'],
-                'palabras_contexto': ['notaría', 'escritura pública', 'contrato', 'cuantía'],
-                'palabras_refuerzo': ['documento público', 'sin legalizar', 'irregular']
-            },
-            'no presenta informes precios de transferencia': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'No presenta informes precios de transferencia',
-                'Impuesto / Infracción': 'Declaración Informativa y/o documentación comprobatoria de precios de transferencia',
-                'Normatividad': 'Arts. 260-1, 260-5, 260-9 y 260-11',
-                'Puntos de Auditoria': 'Verificar con base en los anexos adjuntados a la respectiva denuncia la sujeción del contribuyente denunciado al régimen de precios de transferencia y, en consecuencia, establecer la obligatoriedad de presentar la documentación comprobatoria y la declaración informativa, conforme a lo dispuesto en los artículos 260-5 y 260-9 del Estatuto Tributario.',
-                'palabras_clave': [{'precios de transferencia', 'informe local', 'documentacion comprobatoria'}],
-                'patrones_regex': [
-                    r"vinculados\s+econ[oó]micos",
-                    r"operaciones\s+internacionales\s+sin\s+reporte",
-                    r"falta\s+estudio\s+precios"
-                ],
-                'palabras_determinantes': ['precios de transferencia', 'vinculados', 'omiso reporte'],
-                'palabras_contexto': ['multinacional', 'casa matriz', 'filial', 'operaciones'],
-                'palabras_refuerzo': ['millonarias', 'traslado de beneficios', 'erosión']
-            },
-            'retiene en la fuente y no consigna': {
-                'Conducta': 'Incumplimiento de la Obligación Formal de Declarar',
-                'Conducta Sancionable': 'Retiene en la fuente y no consigna',
-                'Impuesto / Infracción': 'Retención en la Fuente',
-                'Normatividad': 'Arts. 574 y 643 E-T',
-                'Puntos de Auditoria': 'verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto sobre la renta, con el fin de establecer su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación se podrá determinar si se configura o no una conducta de omisión en la práctica, declaración y/o pago de las retenciones en la fuente.',
-                'palabras_clave': [{'no consigna la retencion', 'no consigna los valores retenidos', 'retiene y no paga', 'no paga retencion'}],
-                'patrones_regex': [
-                    r"descuenta\s+y\s+no\s+paga",
-                    r"se\s+roba\s+la\s+retenci[oó]n",
-                    r"apropiaci[oó]n\s+retenciones"
-                ],
-                'palabras_determinantes': ['peculado', 'no consigna', 'apropiación'],
-                'palabras_contexto': ['certificados', 'descuentos', 'nómina', 'proveedores'],
-                'palabras_refuerzo': ['delito', 'cárcel', 'robo']
-            },
-            'cobra tarifas en iva diferentes': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Cobra tarifas en IVA diferentes a las legales',
-                'Impuesto / Infracción': 'Impuesto sobre las ventas',
-                'Normatividad': '468, 468-1, 468-3, 477 y 647 E.T.',
-                'Puntos de Auditoria': 'Verificar, en concordancia con lo dispuesto en los artículos 468, 468-1, 468-3 y 477 del Estatuto Tributario, la tarifa aplicable del impuesto sobre las ventas (IVA) a las operaciones realizadas por el contribuyente, con el fin de establecer si se aplicaron correctamente las disposiciones normativas vigentes. A partir de esta verificación, determinar la existencia de una posible inexactitud derivada de la aplicación de tarifas diferentes a las legalmente establecidas.',
-                'palabras_clave': [{'tarifas diferentes', 'tarifa diferente', 'tarifa que no corresponde', 'a otra trifa'}],
-                'patrones_regex': [
-                    r"iva\s+al\s+5%\s+y\s+es\s+19%",
-                    r"tarifa\s+incorrecta",
-                    r"baja\s+el\s+iva"
-                ],
-                'palabras_determinantes': ['tarifa errada', 'tarifa diferente', 'diferencia tarifa'],
-                'palabras_contexto': ['factura', 'producto', 'servicio', 'porcentaje'],
-                'palabras_refuerzo': []
-            },
-            'consigna ingresos propios en cuentas de terceros': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Consigna ingresos propios en cuentas de terceros',
-                'Impuesto / Infracción': 'Impuesto sobre la renta, impuesto sobre las ventas e impuesto al consumo',
-                'Normatividad': 'Art. 755-3 E.T.',
-                'Puntos de Auditoria': 'Verificar los ingresos del contribuyente denunciado a partir de la información registrada en sus declaraciones tributarias, contrastándola con los movimientos bancarios reportados por el tercero que, según la denuncia, presuntamente estaría sirviendo como intermediario o canal para el flujo de los ingresos. El análisis deberá permitir identificar posibles inconsistencias, omisiones o desvíos en la declaración de ingresos frente a la realidad económica evidenciada en los movimientos financieros.',
-                'palabras_clave': [{'consigna ingresos de terceros', 'en cuentas de terceros'}],
-                'patrones_regex': [
-                    r"cuenta\s+prestada",
-                    r"usa\s+la\s+cuenta\s+de\s+la\s+esposa",
-                    r"recibe\s+en\s+otra\s+cuenta"
-                ],
-                'palabras_determinantes': ['cuenta ajena', 'interpósita persona', 'desvío'],
-                'palabras_contexto': ['banco', 'transferencia', 'nequi', 'daviplata'],
-                'palabras_refuerzo': ['ocultar', 'evadir', 'camuflar']
-            },
-            'dinero depositados en paraisos fiscales': {
-                'Conducta': 'Inexactitu en las declaraciones tributarias',
-                'Conducta Sancionable': 'Dinero depositados en paraisos fiscales',
-                'Impuesto / Infracción': 'Renta y Complementarios e impuesto al patrimonio',
-                'Normatividad': 'Art. 239-1 E.T.',
-                'Puntos de Auditoria': 'De acuerdo con los documentos anexos a la denuncia que sustentan un presunto ocultamiento de activos poseídos en el exterior, verificar la existencia de una posible omisión de activos por parte del contribuyente denunciado, contrastando la información allegada con lo declarado en renta y complmentarios y demás registros disponibles en las bases al acuales se tiene acceso.',
-                'palabras_clave': [{'paraiso', 'paraisos', 'fiscales'}],
-                'patrones_regex': [
-                    r"cuentas\s+en\s+panam[aá]",
-                    r"dinero\s+en\s+las\s+islas",
-                    r"cayman"
-                ],
-                'palabras_determinantes': ['paraíso fiscal', 'offshore', 'jurisdicción no cooperante'],
-                'palabras_contexto': ['banco internacional', 'fundación privada', 'sociedad'],
-                'palabras_refuerzo': ['esconder', 'lavado', 'secreto']
-            },
-            'doble facturacion': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Doble facturación',
-                'Impuesto / Infracción': 'Impuesto sobre la renta, impuesto sobre las ventas e impuesto al consumo',
-                'Normatividad': 'Art. 647 Num. 1',
-                'Puntos de Auditoria': 'De acuerdo con los anexos adjuntados a la denuncia, verificar si el contribuyente denunciado incurre en la práctica de ocultar ingresos mediante una presunta doble facturación, contrastando la información contenida en dichos anexos con la facturación efectivamente generada y reportada ante la administración tributaria.',
-                'palabras_clave': [{'doble facturacion'}],
-                'patrones_regex': [
-                    r"dos\s+facturas\s+mismo\s+n[uú]mero",
-                    r"facturaci[oó]n\s+paralela",
-                    r"software\s+doble\s+contabilidad"
-                ],
-                'palabras_determinantes': ['doble facturación', 'factura gemela', 'clonación'],
-                'palabras_contexto': ['pos', 'software contable', 'caja', 'ventas'],
-                'palabras_refuerzo': ['fraude', 'sistemático', 'organizado']
-            },
-            'incluye costos no procedentes': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Incluye costos no procedentes',
-                'Impuesto / Infracción': 'Renta y Complementarios',
-                'Normatividad': 'Art. 647 Num. 3 E.T.',
-                'Puntos de Auditoria': 'Verificar, con base en los anexos y los hechos expuestos en la denuncia, si el contribuyente denunciado ha incluido en la declaración de renta y complementarios costos o gastos inexistentes, a fin de determinar una posible inexactitud en la información declarada.',
-                'palabras_clave': [{'costos', 'procedentes', 'deducciones', 'incluir', 'incluye', 'soporte de gastos', 'soporte para los gastos'}],
-                'patrones_regex': [
-                    r"gastos\s+personales\s+como\s+empresa",
-                    r"facturas\s+compradas",
-                    r"inflar\s+costos"
-                ],
-                'palabras_determinantes': ['costo inexistente', 'deducción improcedente', 'gasto falso'],
-                'palabras_contexto': ['declaración de renta', 'facturas', 'proveedores'],
-                'palabras_refuerzo': ['bajar impuesto', 'falsedad', 'sin relación de causalidad']
-            },
-            'incluye pasivos inexistentes': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Incluye pasivos inexistentes',
-                'Impuesto / Infracción': 'Renta y Complementarios e impuesto al patrimonio',
-                'Normatividad': 'Art. 239-1 E.T.',
-                'Puntos de Auditoria': 'De acuerdo con los documentos anexos a la denuncia que sustentan la posible conducta de declarar pasivos inexistentes, verificar esta situación contrastando la información allegada con lo declarado en renta y complmentarios y demás registros disponibles en las bases al acuales se tiene acceso.',
-                'palabras_clave': [{'pasivos', 'pasivo', 'pasivos inexistentes'}],
-                'patrones_regex': [
-                    r"deuda\s+falsa",
-                    r"pasivo\s+ficticio",
-                    r"pr[ée]stamo\s+inexistente"
-                ],
-                'palabras_determinantes': ['pasivo inexistente', 'deuda ficticia'],
-                'palabras_contexto': ['patrimonio', 'declaración', 'acreedor'],
-                'palabras_refuerzo': ['disminuir patrimonio', 'evadir', 'mentira']
-            },
-            'no declara retención en la fuente correctamente': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'no declara retención en la fuente correctamente',
-                'Impuesto / Infracción': 'Retención en la Fuente',
-                'Normatividad': 'Art. 647 Num. 2',
-                'Puntos de Auditoria': 'Conforme a lo establecido en los artículos 368 y 368-2 del Estatuto Tributario, corresponde verificar si el contribuyente denunciado ostenta la calidad de agente retenedor en la fuente a título del impuesto sobre la renta, con el fin de determinar su responsabilidad formal y sustancial frente a dicha obligación. A partir de esta verificación, se deberá analizar la coherencia entre las bases sujetas a retención registradas en las declaraciones de retención en la fuente (costos y gastos) y los montos efectivamente retenidos, con el propósito de identificar posibles inconsistencias.',
-                'palabras_clave': [{'no declara retencion correctamente'}],
-                'patrones_regex': [
-                    r"base\s+retenci[oó]n\s+errada",
-                    r"valor\s+declarado\s+menor",
-                    r"error\s+formulario\s+350"
-                ],
-                'palabras_determinantes': ['inexactitud', 'error valores', 'incorrecto'],
-                'palabras_contexto': ['renglones', 'formulario', 'declaración'],
-                'palabras_refuerzo': ['maquillado', 'falso', 'inconsistente']
-            },
-            'no declara impuesto de timbre correctamente': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'no declara impuesto de timbre correctamente',
-                'Impuesto / Infracción': 'Impuesto de timbre nacional',
-                'Normatividad': 'Arts. 519 y 647 Num. 2',
-                'Puntos de Auditoria': 'Conforme a lo previsto en el artículo 519 del Estatuto Tributario, corresponde verificar si el contribuyente denunciado cumple con el hecho generador del impuesto al timbre nacional. A partir de esta verificación, se deberá analizar la coherencia entre la configuración del hecho generador y las retenciones practicadas, con el propósito de identificar posibles inconsistencias o incumplimientos frente a esta obligación tributaria.',
-                'palabras_clave': [{'timbre'}],
-                'patrones_regex': [
-                    r"base\s+timbre\s+errada",
-                    r"tarifa\s+timbre\s+mal"
-                ],
-                'palabras_determinantes': ['inexactitud timbre', 'valor errado'],
-                'palabras_contexto': ['contratos', 'cheques', 'bonos'],
-                'palabras_refuerzo': ['menor valor', 'evasión parcial']
-            },
-            'omite activos': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Omite activos',
-                'Impuesto / Infracción': 'Renta y Complementarios e impuesto al patrimonio',
-                'Normatividad': 'Art. 239-1 E.T.',
-                'Puntos de Auditoria': 'De acuerdo con los documentos anexos a la denuncia que sustentan un presunto ocultamiento de activos, verificar la existencia de una posible omisión de activos por parte del contribuyente denunciado, contrastando la información allegada con lo declarado en renta y complmentarios y demás registros disponibles en las bases al acuales se tiene acceso.',
-                'palabras_clave': [{'omitir activos', 'omite activos', 'activos', 'activo', 'se ha declarado'}],
-                'patrones_regex': [
-                    r"bienes\s+a\s+nombre\s+de\s+otro",
-                    r"no\s+declar[oó]\s+la\s+casa",
-                    r"ocultamiento\s+de\s+bienes"
-                ],
-                'palabras_determinantes': ['omisión de activos', 'bienes ocultos'],
-                'palabras_contexto': ['escrituras', 'vehículos', 'cuentas', 'inversiones','lavado de activos'],
-                'palabras_refuerzo': ['testaferrato', 'dolo', 'intencional']
-            },
-            'omite ingresos': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Omite Ingresos',
-                'Impuesto / Infracción': 'Impuesto sobre la renta, impuesto sobre las ventas e impuesto al consumo',
-                'Normatividad': 'Art. 647 E.T.',
-                'Puntos de Auditoria': 'Verificar, a partir de los cruces de información entre las declaraciones de renta, retención en la fuente, impuesto sobre las ventas (IVA) e información exógena tributaria, la consistencia de las cifras registradas en dichas declaraciones, con el fin de establecer la coherencia en la determinación y declaración de los ingresos del contribuyente denunciado.',
-                'palabras_clave': [{'omite ingresos'}, {'omision de ingresos'}, {'no declara ingresos'}, {'oculta ingresos', 'no declara todos los ingresos', 'recibe intereses', 'recibe arrendamientos', 'ingresos declarados debidamente', 'ingresos declarados indebidamente'}],
-                'patrones_regex': [
-                    r"ventas\s+por\s+debajo\s+de\s+cuerda",
-                    r"ingresos\s+no\s+reportados",
-                    r"dinero\s+sin\s+declarar"
-                ],
-                'palabras_determinantes': ['omisión de ingresos', 'subdeclaración', 'ocultamiento'],
-                'palabras_contexto': ['ventas', 'consignaciones', 'efectivo', 'caja'],
-                'palabras_refuerzo': ['masivo', 'sistemático', 'gran cuantía']
-            },
-            'costos o gastos originados con Proveedor ficticio': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Costos o gastos originados con Proveedor ficticio',
-                'Impuesto / Infracción': 'Renta y Complmentarios',
-                'Normatividad': 'Art. 647-3 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente denunciado registra operaciones con terceros incluidos en las resoluciones de declaratoria de proveedores ficticios emitidas por la Subdirección de Fiscalización Tributaria, con el fin de determinar la cuantía de dichas operaciones y establecer los montos que podrían considerarse presuntamente inexactos',
-                'palabras_clave': [{'proveedor ficticio'}],
-                'patrones_regex': [
-                    r"empresa\s+de\s+papel",
-                    r"facturaci[oó]n\s+simulada",
-                    r"proveedor\s+sancionado"
-                ],
-                'palabras_determinantes': ['proveedor ficticio', 'empresa fachada', 'inexistente'],
-                'palabras_contexto': ['compras', 'servicios', 'facturas'],
-                'palabras_refuerzo': ['trama', 'carrusel', 'fraude']
-            },
-            'retiene en la fuente a tarifas diferentes a las legales': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Retiene en la fuente a tarifas diferentes a las legales',
-                'Impuesto / Infracción': 'Retención en la Fuente',
-                'Normatividad': 'Art. 647 Num. 2',
-                'Puntos de Auditoria': 'Verificar, en concordancia con lo dispuesto en los artículos 392, 395 y 401 del Estatuto Tributario la tarifa de retención en la fuente aplicable a las operaciones realizadas por el contribuyente, con el fin de establecer si se aplicaron correctamente las disposiciones normativas vigentes. A partir de esta verificación, determinar la existencia de una posible inexactitud derivada de la aplicación de tarifas diferentes a las legalmente establecidas',
-                'palabras_clave': [{'aplica retencion en la fuente con tarifas distintas', 'tarifas diferentes', 'efectua retenciones en la fuente con tarifas', 'practica retención en la fuente a una tarifa', 'realiza retencion en la fuente con una tarifa'}],
-                'patrones_regex': [
-                    r"porcentaje\s+retenci[oó]n\s+mal",
-                    r"aplica\s+tarifa\s+menor",
-                    r"error\s+tabla\s+retenci[oó]n"
-                ],
-                'palabras_determinantes': ['tarifa incorrecta', 'mal practicada'],
-                'palabras_contexto': ['tabla de retención', 'concepto', 'base'],
-                'palabras_refuerzo': ['desconocimiento', 'error reiterado']
-            },
-            'solicita beneficios fiscales inexistentes': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Solicita beneficios fiscales inexistentes',
-                'Impuesto / Infracción': 'Renta y Complementarios',
-                'Normatividad': 'Art. 647 Num. 3 E.T.',
-                'Puntos de Auditoria': 'Verificar, con base en el hecho denunciado y los anexos aportados, si el contribuyente ha aplicado exenciones o beneficios tributarios sin cumplir los requisitos establecidos en la normativa vigente. A partir de esta verificación, determinar la posible existencia de una presunta inexactitud en sus declaraciones tributarias.',
-                'palabras_clave': [{'exenciones', 'beneficios', 'fiscales', 'tributarios'}, {'beneficio tributario', 'exenciones tributarias'}],
-                'patrones_regex': [
-                    r"descuento\s+tributario\s+falso",
-                    r"exenci[oó]n\s+no\s+aplica",
-                    r"renta\s+exenta\s+improcedente"
-                ],
-                'palabras_determinantes': ['beneficio improcedente', 'exención falsa'],
-                'palabras_contexto': ['zona franca', 'economía naranja', 'agro', 'ley 1429'],
-                'palabras_refuerzo': ['abuso', 'sin requisitos', 'fraude']
-            },
-            'inexactitud declaracion ingresos y patrimonio': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'inexactitud declaracion ingresos y patrimonio',
-                'Impuesto / Infracción': 'Renta y Complementarios',
-                'Normatividad': 'Art. 23, 13-1, 23-2 y 647 Num. 6 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente denunciado tiene la obligación de presentar la declaración de ingresos y patrimonio, conforme a los parámetros establecidos en la normativa tributaria vigente. A partir de esta verificación, determinar la posible existencia de una presunta inexactitud en sus declaraciones tributarias.',
-                'palabras_clave': [{'exenciones', 'beneficios', 'fiscales', 'tributarios'}, {'beneficio tributario', 'exenciones tributarias'}],
-                'patrones_regex': [
-                    r"entidad\s+sin\s+animo\s+lucro\s+inexacta",
-                    r"error\s+ingresos\s+y\s+patrimonio"
-                ],
-                'palabras_determinantes': ['inexactitud', 'error cifras'],
-                'palabras_contexto': ['esal', 'fundación', 'asociación', 'cooperativa'],
-                'palabras_refuerzo': ['desvío de recursos', 'lucro indirecto']
-            },
-            'utiliza documentos presuntamente falsos': {
-                'Conducta': 'Inexactitud en las declaraciones tributarias',
-                'Conducta Sancionable': 'Utiliza documentos presuntamente falsos',
-                'Impuesto / Infracción': 'Impuesto sobre la renta',
-                'Normatividad': 'Art. 647 Num. 6 E.T.',
-                'Puntos de Auditoria': 'Verificar la realidad económica de las operaciones efectuadas por el contribuyente denunciado, con el propósito de establecer la procedencia de los costos y deducciones imputados en sus declaraciones tributarias, conforme a los principios de causalidad, necesidad y proporcionalidad previstos en la normativa fiscal vigente, y sustentados en documentos que cumplan con los requisitos formales y sustanciales exigidos para su aceptación tributaria.',
-                'palabras_clave': [{'documentos falsos', 'documento falso', 'documentos irregulares'}],
-                'patrones_regex': [
-                    r"factura\s+falsificada",
-                    r"soporte\s+adulterado",
-                    r"firma\s+falsa"
-                ],
-                'palabras_determinantes': ['falsedad', 'adulteración', 'forjado'],
-                'palabras_contexto': ['soportes', 'contabilidad', 'pruebas'],
-                'palabras_refuerzo': ['delito', 'penal', 'criminal']
-            },
-            'no factura': {
-                'Conducta': 'Facturación',
-                'Conducta Sancionable': 'No factura',
-                'Impuesto / Infracción': 'Factura Electrónica',
-                'Normatividad': 'Arts. 615 y 652-1 E.T. - Res. 165/2023',
-                'Puntos de Auditoria': 'Verificar, de acuerdo con los requerimientos establecidos en la normativa tributaria vigente, si el contribuyente denunciado se encuentra obligado a expedir factura electrónica de venta o documentos equivalentes. A partir de dicha verificación, determinar la posible omisión en el cumplimiento del deber formal de expedición de dichos documentos.',
-                'palabras_clave': [{'no factura', 'no expide factura', 'no emite factura', 'no emite factura electronica', 'no da factura', 'sistema de facturacion electronica', 'sistema de facturacion', 'no emitieron', 'recibos de caja', 'recibo de caja', 'no me da recibo', 'no recibir las facturas', 'le emite factura', 'no hace facturas', 'no hace factura', 'facturar electronicamente', 'me la enviaban', 'no es una factura electronica', 'sin factura'}],
-                'patrones_regex': [
-                    r"se\s+niega\s+a\s+facturar",
-                    r"entrega\s+cuenta\s+de\s+cobro",
-                    r"papelito\s+sin\s+validez"
-                ],
-                'palabras_determinantes': ['no factura', 'omisión facturación', 'evasión'],
-                'palabras_contexto': ['compra', 'venta', 'almacén', 'restaurante'],
-                'palabras_refuerzo': ['ilegal', 'clausura', 'sanción']
-            },
-            'factura sin requisitos': {
-                'Conducta': 'Facturación',
-                'Conducta Sancionable': 'Factura sin requisitos',
-                'Impuesto / Infracción': 'Factura Electrónica',
-                'Normatividad': 'Arts. 615 y 652 E.T. - Res. 165/2023',
-                'Puntos de Auditoria': 'Revisión de la información mínima de la factura.',
-                'palabras_clave': [{'irregularidades en facturacion', 'sin requisitos', 'sin el lleno de requisitos', 'con todos los requisitos', 'mismo numero', 'comprado a mi nombre', 'factura falsa', 'facturacion falsa'}],
-                'patrones_regex': [
-                    r"factura\s+sin\s+resoluci[oó]n",
-                    r"ticket\s+sin\s+nombre",
-                    r"factura\s+manual\s+vencida"
-                ],
-                'palabras_determinantes': ['requisitos incompletos', 'factura ilegal'],
-                'palabras_contexto': ['artículo 617', 'resolución', 'numeración'],
-                'palabras_refuerzo': ['informal', 'error', 'sin validez']
-            },
-            'errores envio informacion exogena': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'Errores envío información exógena',
-                'Impuesto / Infracción': 'Suministro información',
-                'Normatividad': 'Arts. 631 y  651 E.T.',
-                'Puntos de Auditoria': 'Verificar, de acuerdo con los requerimientos de suministro de información de relevancia tributaria y en contraste con los hechos denunciados y sus anexos, si la información transmitida por el contribuyente denunciado cumple con las especificaciones y requerimientos técnicos establecidos por la normativa vigente.',
-                'palabras_clave': [{'error informacion exogena', 'errores informacion exogena', 'errores exogena', 'error exogena', 'exogena erronea'}],
-                'patrones_regex': [
-                    r"datos\s+errados\s+ex[oó]gena",
-                    r"cifras\s+que\s+no\s+cruzan",
-                    r"reporte\s+mal\s+diligenciado"
-                ],
-                'palabras_determinantes': ['error', 'inconsistencia', 'inexactitud'],
-                'palabras_contexto': ['medios magnéticos', 'formatos', 'prevalidador'],
-                'palabras_refuerzo': ['masivo', 'reproceso', 'sanción']
-            },
-            'inscrito en el regimen de iva que no corresponde': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'Inscrito en el regimen de IVA que no corresponde',
-                'Impuesto / Infracción': 'Obligaciones formales',
-                'Normatividad': 'Art. 658-3 E.T.',
-                'Puntos de Auditoria': 'Verificar la realidad económica del contribuyente denunciado con el fin de establecer la correcta inscripción, actualización y correspondencia de sus obligaciones, calidades y atributos tributarios en el Registro Único Tributario (RUT), conforme a la normativa vigente.',
-                'palabras_clave': [{'inscrito', 'inscribir'}],
-                'patrones_regex': [
-                    r"r[ée]gimen\s+simplificado\s+siendo\s+com[uú]n",
-                    r"no\s+responsable\s+siendo\s+responsable",
-                    r"tope\s+superado\s+iva"
-                ],
-                'palabras_determinantes': ['régimen incorrecto', 'falso no responsable'],
-                'palabras_contexto': ['rut', 'responsabilidad 48', 'ingresos brutos'],
-                'palabras_refuerzo': ['actualización', 'fraude rut', 'evasión']
-            },
-            'lleva doble contabilidad': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'Lleva doble contabilidad',
-                'Impuesto / Infracción': 'Irregularidades en la contabilidad',
-                'Normatividad': 'Art. 655 E.T.',
-                'Puntos de Auditoria': 'De acuerdo con el hecho denunciado y los anexos aportados, verificar si el contribuyente denunciado incurre en irregularidades relacionadas con los libros de contabilidad, conforme a las disposiciones establecidas en el Código de Comercio y en la normativa tributaria vigente.',
-                'palabras_clave': [{'doble contabilidad', 'lleva doble'}],
-                'patrones_regex': [
-                    r"libros\s+oficiales\s+y\s+reales",
-                    r"contabilidad\s+paralela",
-                    r"cuaderno\s+privado"
-                ],
-                'palabras_determinantes': ['doble contabilidad', 'libros falsos'],
-                'palabras_contexto': ['libros contables', 'auditoría', 'revisoría'],
-                'palabras_refuerzo': ['sanción clausura', 'delito', 'grave']
-            },
-            'no contabiliza todas sus operaciones': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'no contabiliza todas sus operaciones',
-                'Impuesto / Infracción': 'Irregularidades en la contabilidad',
-                'Normatividad': 'Art. 655 E.T.',
-                'Puntos de Auditoria': 'De acuerdo con el hecho denunciado y los anexos aportados, verificar si el contribuyente denunciado incurre en irregularidades contables derivadas de la omisión en el registro de todas las operaciones realizadas, conforme a lo dispuesto en el Código de Comercio y en la normativa tributaria vigente.',
-                'palabras_clave': [{'no registra', 'no contabiliza', 'todas sus operaciones', 'no esta registrado'}],
-                'patrones_regex': [
-                    r"ventas\s+sin\s+registrar",
-                    r"gastos\s+sin\s+soporte\s+contable",
-                    r"caja\s+no\s+cuadra"
-                ],
-                'palabras_determinantes': ['falta registro', 'omisión contable'],
-                'palabras_contexto': ['asientos', 'auxiliares', 'diario'],
-                'palabras_refuerzo': ['desorden', 'atraso', 'irregularidad']
-            },
-            'no esta inscrito en el rut': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'No esta inscrito en el Registro Unico Tributario - RUT',
-                'Impuesto / Infracción': 'Obligaciones formales',
-                'Normatividad': 'Art. 658-3 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente se encuentra debidamente inscrito en el Registro Único Tributario – RUT, con la inclusión de las responsabilidades, calidades y atributos tributarios que correspondan a su actividad económica y obligaciones fiscales, de conformidad con la normativa vigente.',
-                'palabras_clave': [{'no esta inscrito', 'no aparece inscrito', 'no se encuentra inscrito', 'no aparece registrado', 'no se encuentra debidamente inscrito', 'no tiene rut'}],
-                'patrones_regex': [
-                    r"trabaja\s+sin\s+rut",
-                    r"empresa\s+sin\s+registro",
-                    r"comercio\s+informal"
-                ],
-                'palabras_determinantes': ['sin rut', 'no inscrito', 'informal'],
-                'palabras_contexto': ['cámara de comercio', 'registro'],
-                'palabras_refuerzo': []
-            },
-            'reportado sin vinculo comercial en exogena por terceros': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'reportado sin vinculo comercial en exogena por terceros',
-                'Impuesto / Infracción': 'Suministro información',
-                'Normatividad': 'Arts. 631 y  651 E.T.',
-                'Puntos de Auditoria': 'Verificar, de acuerdo con los requerimientos de suministro de información de relevancia tributaria y en contraste con los hechos denunciados y sus anexos, si la información transmitida por el contribuyente denunciado cumple con las especificaciones y requerimientos técnicos establecidos por la normativa vigente.',
-                'palabras_clave': [{'exogena de terceros', 'sin vinculo', 'me reporto', 'me informo', 'no conozco', 'corrija', 'corregir', 'no reconozco', 'mi informacion', 'reconozco', 'mi exogena', 'reporte realizado por', 'reporte hecho por', 'suplantado', 'suplantar', 'realizo reporte de informacion', 'reporte de informacion exogena', 'ningun vinculo', 'ningun vinculo comercial', 'operaciones que jamas realice', 'operaciones que nunca realice'}],
-                'patrones_regex': [
-                    r"aparezco\s+en\s+su\s+ex[oó]gena",
-                    r"nunca\s+le\s+vend[ií]",
-                    r"jam[aá]s\s+compr[ée]"
-                ],
-                'palabras_determinantes': ['reporte indebido', 'sin vínculo', 'suplantacion'],
-                'palabras_contexto': ['consulta de datos', 'declaración sugerida', 'terceros'],
-                'palabras_refuerzo': ['falso', 'error', 'desconozco']
-            },
-            'no expide certificados de retencion': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'No Expide certificados de retencion en fuente',
-                'Impuesto / Infracción': 'Obligaciones formales',
-                'Normatividad': 'Art. 667 E.T.',
-                'Puntos de Auditoria': 'De acuerdo con el hecho denunciado y los anexos adjuntos, verificar si el contribuyente denunciado ha incumplido el deber formal de expedir los certificados de retención en la fuente a los que está obligado en calidad de agente retenedor, dentro de los plazos y condiciones establecidos por la normativa tributaria vigente.',
-                'palabras_clave': [{'no expide certificado', 'no emite certificado', 'no genera certificado', 'no entrega certificado', 'no proporciona certificado', 'certificados de retencion', 'certificados correspondientes', 'certificado de ingresos', 'certificados de retencion', 'certificado de retenciones', 'certificado de ingresos y retenciones', 'no fue certificada'}],
-                'patrones_regex': [
-                    r"niego\s+certificado\s+retefuente",
-                    r"no\s+me\s+da\s+el\s+papel",
-                    r"certificado\s+ingresos\s+y\s+retenciones"
-                ],
-                'palabras_determinantes': ['no certifica', 'sin certificado', 'incumple deber'],
-                'palabras_contexto': ['marzo', 'declaración renta', 'soporte'],
-                'palabras_refuerzo': ['obligación', 'sanción', 'perjuicio']
-            },
-            'no lleva contabilidad': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'No lleva contabilidad',
-                'Impuesto / Infracción': 'Irregularidades en la contabilidad',
-                'Normatividad': 'Art. 655 E.T.',
-                'Puntos de Auditoria': 'De acuerdo con el hecho denunciado y los anexos aportados, verificar si el contribuyente denunciado incurre en irregularidades contables derivadas de la omisión de llevar contabilidad, conforme a lo dispuesto en el Código de Comercio y en la normativa tributaria vigente.',
-                'palabras_clave': [{'no lleva contabilidad', 'no lleva registros contables', 'no realiza registros contables'}],
-                'patrones_regex': [
-                    r"no\s+tiene\s+contador",
-                    r"negocio\s+sin\s+libros",
-                    r"manejo\s+de\s+tienda"
-                ],
-                'palabras_determinantes': ['sin contabilidad', 'no obligado (falso)', 'informalidad'],
-                'palabras_contexto': ['comerciante', 'obligado a llevar', 'código comercio'],
-                'palabras_refuerzo': ['total', 'caos', 'imposible auditar']
-            },
-            'proveedor ficticio': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'proveedor ficticio',
-                'Impuesto / Infracción': 'Proveedor ficticio o insolvente',
-                'Normatividad': 'Art. 671 E.T.',
-                'Puntos de Auditoria': 'Verificar si el contribuyente denunciado registra operaciones con terceros incluidos en las resoluciones de declaratoria de proveedores ficticios emitidas por la Subdirección de Fiscalización Tributaria, con el fin de determinar la cuantía de dichas operaciones y establecer los montos que podrían considerarse presuntamente inexactos',
-                'palabras_clave': [{'proveedor ficticio'}],
-                'patrones_regex': [
-                    r"declarado\s+ficticio\s+dian",
-                    r"empresa\s+fantasma",
-                    r"venta\s+de\s+facturas"
-                ],
-                'palabras_determinantes': ['ficticio', 'insolvente', 'fachada'],
-                'palabras_contexto': ['resolución dian', 'publicación', 'listado'],
-                'palabras_refuerzo': ['prohibido', 'sanción penal', 'fraude']
-            },
-            'solicita devoluciones improcedentes': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'Solicita devoluciones improcedentes',
-                'Impuesto / Infracción': 'Improcedencia de las devoluciones y/o compensaciones',
-                'Normatividad': 'Art. 670 E.T.',
-                'Puntos de Auditoria': 'De acuerdo con el hecho denunciado y los anexos adjuntos, verificar si existen indicios que permitan determinar que el contribuyente denunciado utilizó documentos falsos o, mediante maniobras fraudulentas, obtuvo indebidamente una devolución o compensación tributaria.',
-                'palabras_clave': [{'devolucion', 'solicita devoluciones improcedentes', 'devoluciones improcedentes'}],
-                'patrones_regex': [
-                    r"saldo\s+a\s+favor\s+falso",
-                    r"pidi[oó]\s+devoluci[oó]n\s+con\s+trampa",
-                    r"arrastre\s+improcedente"
-                ],
-                'palabras_determinantes': ['devolución improcedente', 'compensación indebida'],
-                'palabras_contexto': ['saldo a favor', 'solicitud'],
-                'palabras_refuerzo': []
-            },
-            'no reporta información exógena': {
-                'Conducta': 'Obligaciones diferentes a declarar y pagar',
-                'Conducta Sancionable': 'No reporta información exógena',
-                'Impuesto / Infracción': 'Suministro de información',
-                'Normatividad': 'Arts. 631 y  651 E.T.',
-                'Puntos de Auditoria': 'Verificar, de acuerdo con los requerimientos de suministro de información de relevancia tributaria y en contraste con los hechos denunciados y sus anexos, si el contribuyente denunciado cumplió con el deber formal de suministrar información exógena de relevancia tributaria bajo las especificaciones y requerimientos técnicos establecidos por la normativa vigente.',
-                'palabras_clave': [{'no reporta informacion exogena', 'no transmite informacion exogena', 'no transmitio informacion exogerna', 'la exogena no se ha presentado','medios magneticos'}],
-                'patrones_regex': [
-                    r"no\s+envi[oó]\s+medios",
-                    r"no\s+magn[eé]ticos",
-                    r"omisi[oó]n\s+reporte\s+anual",
-                    r"falta\s+informaci[oó]n\s+ex[oó]gena"
-                ],
-                'palabras_determinantes': ['no reporta', 'omiso exógena', 'sin medios','medios magneticos'],
-                'palabras_contexto': ['formatos', 'prevalidador', 'resolución','medios magneticos'],
-                'palabras_refuerzo': []
-            }
-        }
-    }
-}
 
-        # --- CÓDIGO OPTIMIZADO PARA EVITAR BLOQUEOS ---
-        
-        print("DEBUG: Estructura de reglas lista. Creando columnas...", flush=True)
+    # --- CÓDIGO OPTIMIZADO PARA EVITAR BLOQUEOS ---
+    
+    print("DEBUG: Estructura de reglas lista. Creando columnas...", flush=True)
 
-        # 1. Crear columnas vacías rápidamente
-        columnas_nuevas = [
-            'Año de Investigación', 'Conclusión', 'Auditor', 'Normatividad', 
-            'Puntos de Auditoria', 'Lavado de Activos', 'Dirección Seccional', 
-            'Beneficio Auditoria', 'Año Beneficio Auditoria', 'Fecha Firmeza'
-        ]
-        for col in columnas_nuevas:
-            df[col] = ''
+    # 1. Crear columnas vacías rápidamente
+    columnas_nuevas = [
+        'Año de Investigación', 'Conclusión', 'Auditor', 'Normatividad', 
+        'Puntos de Auditoria', 'Lavado de Activos', 'Dirección Seccional', 
+        'Beneficio Auditoria', 'Año Beneficio Auditoria', 'Fecha Firmeza','Lectura IA'
+    ]
+    for col in columnas_nuevas:
+        df[col] = ''
 
-        print(f"DEBUG: INICIANDO PROCESAMIENTO DE {len(df)} FILAS AHORA MISMO...", flush=True)
+    print(f"DEBUG: INICIANDO PROCESAMIENTO DE {len(df)} FILAS AHORA MISMO...", flush=True)
 
-        # 2. Inicio del Bucle Principal
-        for index, row in df.iterrows():
-            # Forzamos la salida en pantalla para confirmar vida
-            print(f"--> Procesando Fila {index + 1}...", flush=True)
+    print("DEBUG: Optimizando reglas de negocio (Pre-procesamiento)...", flush=True)
 
+    # Estructura para guardar las reglas ya lematizadas y listas para usar
+    reglas_optimizadas = []
 
-
-
+    for reg_nom, data in reglas_conclusion.items():
+        for key, rules in data['reglas'].items():
             
+            # Pre-calcular versión lematizada de la clave principal
+            key_procesada = lematizar_artesanal(normalizar_texto(key))
+            
+            # Pre-calcular listas de palabras clave
+            determinantes_proc = [lematizar_artesanal(normalizar_texto(p)) for p in rules.get('palabras_determinantes', [])]
+            contexto_proc = [lematizar_artesanal(normalizar_texto(p)) for p in rules.get('palabras_contexto', [])]
+            legacy_proc = []
+            
+            # Manejar tanto listas como sets en palabras_clave (legacy)
+            raw_legacy = rules.get('palabras_clave', [])
+            lista_legacy_temp = []
+            if raw_legacy:
+                # Si es una lista de sets (tu estructura actual tiene sets dentro de listas: [{'...'}])
+                for item in raw_legacy:
+                    if isinstance(item, set):
+                        lista_legacy_temp.extend(list(item))
+                    else:
+                        lista_legacy_temp.append(item)
+            
+            for item in lista_legacy_temp:
+                legacy_proc.append(lematizar_artesanal(normalizar_texto(item)))
+
+            # Guardar todo en una estructura plana
+            regla_opt = {
+                'Regimen': reg_nom,
+                'Key_Lema': key_procesada,
+                'Determinantes': determinantes_proc,
+                'Contexto': contexto_proc,
+                'Legacy': legacy_proc,
+                # Compilamos las regex de la regla aquí mismo
+                'Regex': [re.compile(p, re.IGNORECASE) for p in rules.get('patrones_regex', [])], 
+                'Negativas': [normalizar_texto(n) for n in rules.get('palabras_negativas', [])],
+                'Refuerzo': [normalizar_texto(r) for r in rules.get('palabras_refuerzo', [])],
+                'DataOriginal': rules # Guardamos referencia a los datos originales para el reporte
+            }
+            reglas_optimizadas.append(regla_opt)
+
+    print(f"DEBUG: {len(reglas_optimizadas)} reglas optimizadas. Iniciando procesamiento rápido...", flush=True)
+
+    # 2. Inicio del Bucle Principal
+    for index, row in df.iterrows():
+        # Forzamos la salida en pantalla para confirmar vida
+        print(f"--> Procesando Fila {index + 1}...", flush=True)
 
         descripcion_hechos = str(row.get('Descripción de los Hechos', ''))
-        
         # Inicializamos variables críticas
         contexto_ia = ""
         anios_ia = []
@@ -2242,6 +1490,7 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
                 ctx, anios = consultar_contexto_ia(descripcion_hechos, modelo_seleccionado)
                 contexto_ia = " " + ctx 
                 anios_ia = anios
+                df.at[index, 'Lectura IA'] = ctx
             except Exception as e:
                 print(f"Advertencia fila {index}: Falló la IA. Error: {e}")
 
@@ -2302,67 +1551,72 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         df.at[index, 'Prioritaria'] = prioridad
 
         # --- C. CLASIFICACIÓN DE CONDUCTAS ---
-        texto_completo = descripcion_hechos + contexto_ia
+        texto_completo = contexto_ia
+        
+        # --- BLOQUE DEBUG PARA VERIFICAR QUE LA IA SE ESTÁ LEYENDO ---
+        if usar_ia and contexto_ia.strip():
+            print(f"   [IA ACTIVA] Fila {index}: Se agregaron {len(contexto_ia)} caracteres de contexto IA al análisis.")
+            # Descomenta la siguiente línea si quieres ver el texto exacto en la consola:
+            # print(f"   --> Texto IA: {contexto_ia[:100]}...") 
+        # -------------------------------------------------------------
+
         desc_norm = normalizar_texto(texto_completo)
+        # IMPORTANTE: Lematizamos solo UNA VEZ por fila
         desc_lema = lematizar_artesanal(desc_norm)
         
         matches = []
-        PESOS = {'patron_regex': 60, 'determinantes': 50, 'exacta': 40, 'contexto': 15, 'legacy': 10, 'refuerzo': 5}
+        PESOS = {'patron_regex': 60, 'determinantes': 50, 'exacta': 40, 'contexto': 15, 'legacy': 10}
 
-        # Función auxiliar local para puntuación
-        def calc_pts(lista, peso):
-            pts = 0
-            if not lista: return 0
-            for item in lista:
-                if isinstance(item, (list, tuple)): # Grupo
-                    g = [lematizar_artesanal(normalizar_texto(x)) for x in item]
-                    if all(gi in desc_lema and not detectar_negacion_cercana(desc_lema, gi) for gi in g):
-                        pts += peso * len(g)
-                elif isinstance(item, str): # Simple
-                    i_lema = lematizar_artesanal(normalizar_texto(item))
-                    if i_lema in desc_lema and not detectar_negacion_cercana(desc_lema, i_lema):
-                        pts += peso
-            return pts
+        # Iteramos sobre la lista optimizada en lugar del diccionario crudo
+        for regla in reglas_optimizadas:
+            puntos = 0
+            
+            # 1. Negación (Abortar rápido si encuentra palabra negativa)
+            if any(neg in desc_norm for neg in regla['Negativas']): 
+                continue
 
-        for reg_nom, data in reglas_conclusion.items():
-            for key, rules in data['reglas'].items():
-                puntos = 0
-                
-                # 1. Negación (Abortar si encuentra palabra negativa)
-                if 'palabras_negativas' in rules and rules['palabras_negativas']:
-                    if any(normalizar_texto(pn) in desc_norm for pn in rules['palabras_negativas']): continue
+            # 2. Puntuación
+            # Exacta (Comparación directa string vs string)
+            if regla['Key_Lema'] in desc_lema and not detectar_negacion_cercana(desc_lema, regla['Key_Lema']): 
+                puntos += PESOS['exacta']
+            
+            # Listas (Determinantes)
+            for item in regla['Determinantes']:
+                if item in desc_lema and not detectar_negacion_cercana(desc_lema, item):
+                    puntos += PESOS['determinantes']
+            
+            # Listas (Contexto)
+            for item in regla['Contexto']:
+                if item in desc_lema and not detectar_negacion_cercana(desc_lema, item):
+                    puntos += PESOS['contexto']
 
-                # 2. Refuerzo
-                bono = 0
-                if 'palabras_refuerzo' in rules:
-                    bono = calc_pts(rules['palabras_refuerzo'], 0) * 0 # Solo chequeo existencia simple
-                    if any(normalizar_texto(pr) in desc_norm for pr in rules.get('palabras_refuerzo', [])): bono = 50
+            # Listas (Legacy/Palabras Clave)
+            for item in regla['Legacy']:
+                if item in desc_lema and not detectar_negacion_cercana(desc_lema, item):
+                    puntos += PESOS['legacy']
+            
+            # Regex (Usamos las versiones pre-compiladas)
+            for patron in regla['Regex']:
+                if patron.search(desc_lema): 
+                    puntos += PESOS['patron_regex']
 
-                # 3. Puntuación
-                # Exacta
-                k_lema = lematizar_artesanal(normalizar_texto(key))
-                if k_lema in desc_lema and not detectar_negacion_cercana(desc_lema, k_lema): puntos += PESOS['exacta']
-                
-                # Listas
-                puntos += calc_pts(rules.get('palabras_determinantes', []), PESOS['determinantes'])
-                puntos += calc_pts(rules.get('palabras_contexto', []), PESOS['contexto'])
-                puntos += calc_pts(rules.get('palabras_clave', []), PESOS['legacy'])
-                
-                # Regex
-                if 'patrones_regex' in rules:
-                    for pat in rules['patrones_regex']:
-                        if re.search(pat, desc_lema, re.IGNORECASE): puntos += PESOS['patron_regex']
+            # 3. Refuerzo (Bono simple)
+            bono = 0
+            if any(ref in desc_norm for ref in regla['Refuerzo']): 
+                bono = 50
 
-                if puntos > 0:
-                    matches.append({
-                        'Puntaje': puntos + bono,
-                        'Regimen': reg_nom,
-                        'Conducta': rules['Conducta'],
-                        'Conducta Sancionable': rules['Conducta Sancionable'],
-                        'Impuesto / Infracción': rules['Impuesto / Infracción'],
-                        'Normatividad': rules.get('Normatividad', 'N/A'),
-                        'Puntos de Auditoria': rules.get('Puntos de Auditoria', 'N/A')
-                    })
+            if puntos > 0:
+                # Recuperamos los datos originales para llenar el reporte
+                datos_orig = regla['DataOriginal']
+                matches.append({
+                    'Puntaje': puntos + bono,
+                    'Regimen': regla['Regimen'],
+                    'Conducta': datos_orig['Conducta'],
+                    'Conducta Sancionable': datos_orig['Conducta Sancionable'],
+                    'Impuesto / Infracción': datos_orig['Impuesto / Infracción'],
+                    'Normatividad': datos_orig.get('Normatividad', 'N/A'),
+                    'Puntos de Auditoria': datos_orig.get('Puntos de Auditoria', 'N/A')
+                })
 
         # --- D. FILTRADO Y EXCLUSIÓN ---
         EXCLUSION = {
@@ -2378,6 +1632,8 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         matches = [m for m in matches if m['Conducta Sancionable'] not in eliminar]
 
         finales = []
+        conclusiones_encontradas = None # Inicializamos variable para evitar error en referencia posterior
+
         if matches:
             max_p = max(m['Puntaje'] for m in matches)
             umbral = max_p * 0.10
@@ -2393,6 +1649,9 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
             for princ, aux in REGLAS_ANIDADAS.items():
                 if any(m['Conducta Sancionable'] == princ for m in finales) and not any(m['Conducta Sancionable'] == aux['Conducta Sancionable'] for m in finales):
                     finales.insert(1, aux) # Insertar después del líder
+        
+        # Asignamos finales a conclusiones_encontradas para mantener consistencia con código posterior
+        conclusiones_encontradas = finales 
 
         # --- E. ESCRITURA EN DATAFRAME ---
         # Limpiar
@@ -2434,219 +1693,212 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         else:
             df.at[index, 'Beneficio Auditoria'] = 'NO' if ruta_archivo_beneficio else ''   
 
-
-
-
-
-
-
-
-                
-
-
-            # GENERACIÓN DE CONCLUSIÓN ---
-            # Ahora la generación de conclusión es independiente del bloque de beneficio de auditoría
-            if conclusiones_encontradas:
-                # Generamos el texto de conclusión completo
-                conclusion_texto_list = []
-                for match in conclusiones_encontradas:
-                    conclusion_texto_list.append(
-                        f"régimen [{match['Regimen']}] por la conducta de [{match['Conducta']}] "
-                        f"y conducta sancionable [{match['Conducta Sancionable']}] por el impuesto o infracción "
-                        f"[{match['Impuesto / Infracción']}]"
-                    )
-
-                conclusion_final = (
-                    f"Según radicado {row.get('Número Radicación', 'N/A')} de fecha {row.get('Fecha Radicación', 'N/A')}, "
-                    f"el contribuyente denunciado {row.get('Nombre/Razon Social Denunciado', 'N/A')} "
-                    f"identificado con tipo de documento {row.get('Tipo Documento Denunciado', 'N/A')} "
-                    f"número {row.get('Documento Denunciado', 'N/A')}, ubicado en la ciudad de {row.get('Ciudad', 'N/A')} "
-                    f"en el departamento de {row.get('Departamento', 'N/A')}, es denunciado por infringir el "
-                    f"{' y también por '.join(conclusion_texto_list)}, por la(s) vigencia(s) fiscal(es) [{anho_investigacion}]"
+        # GENERACIÓN DE CONCLUSIÓN ---
+        # Ahora la generación de conclusión es independiente del bloque de beneficio de auditoría
+        if conclusiones_encontradas:
+            # Generamos el texto de conclusión completo
+            conclusion_texto_list = []
+            for match in conclusiones_encontradas:
+                conclusion_texto_list.append(
+                    f"régimen [{match['Regimen']}] por la conducta de [{match['Conducta']}] "
+                    f"y conducta sancionable [{match['Conducta Sancionable']}] por el impuesto o infracción "
+                    f"[{match['Impuesto / Infracción']}]"
                 )
 
-                df.at[index, 'Conclusión'] = conclusion_final
-            else:
-                df.at[index, 'Conclusión'] = "No se encontraron infracciones clasificables."
+            conclusion_final = (
+                f"Según radicado {row.get('Número Radicación', 'N/A')} de fecha {row.get('Fecha Radicación', 'N/A')}, "
+                f"el contribuyente denunciado {row.get('Nombre/Razon Social Denunciado', 'N/A')} "
+                f"identificado con tipo de documento {row.get('Tipo Documento Denunciado', 'N/A')} "
+                f"número {row.get('Documento Denunciado', 'N/A')}, ubicado en la ciudad de {row.get('Ciudad', 'N/A')} "
+                f"en el departamento de {row.get('Departamento', 'N/A')}, es denunciado por infringir el "
+                f"{' y también por '.join(conclusion_texto_list)}, por la(s) vigencia(s) fiscal(es) [{anho_investigacion}]"
+            )
+
+            df.at[index, 'Conclusión'] = conclusion_final
+        else:
+            df.at[index, 'Conclusión'] = "No se encontraron infracciones clasificables."
+    
+    # --- Reparto de Denuncias entre Auditores ---
+    # Se guarda el df original (antes de reordenar) en df_original_index para mapear la asignación
+    df_asignaciones, auditor_asignado_serie = repartir_denuncias(df.copy(), AUDITORES)
+    
+    # Asignar la columna 'Auditor' al DataFrame principal (df)
+    df['Auditor'] = auditor_asignado_serie
+    
+    # --- Reordenamiento de Columnas ---
+    
+    # Define las nuevas columnas a insertar
+    columnas_fijas = ['Prioritaria', 'Año de Investigación', 'Régimen', 'Conducta', 'Conducta Sancionable', 'Impuesto / Infracción', 'Normatividad', 'Puntos de Auditoria', 'Dirección Seccional', 'Beneficio Auditoria', 'Año Beneficio Auditoria','Fecha Firmeza', 'Lavado de Activos']
+    
+    # Crear la lista de columnas en el orden deseado
+    columnas_ordenadas_final = []
+    for col in df.columns:
+        if col not in columnas_fijas and col not in ['Conclusión', 'Auditor', 'Normatividad', 'Puntos de Auditoria']:
+            columnas_ordenadas_final.append(col)
+    
+    # Insertar las columnas fijas en su posición
+    temp_df = df[columnas_ordenadas_final]
+    
+    # Encontrar la posición para insertar las nuevas columnas
+    columnas_ordenadas_final_con_data = []
+    for col in df.columns:
+        if col not in ['Régimen', 'Conducta', 'Conducta Sancionable', 'Impuesto / Infracción', 'Normatividad', 'Puntos de Auditoria', 'Conclusión', 'Auditor', 'Lectura IA']:
+            columnas_ordenadas_final_con_data.append(col)
+
+        if col == 'Descripción de los Hechos':
+            columnas_ordenadas_final_con_data.append('Lectura IA')    
         
-        # --- Reparto de Denuncias entre Auditores ---
-        # Se guarda el df original (antes de reordenar) en df_original_index para mapear la asignación
-        df_asignaciones, auditor_asignado_serie = repartir_denuncias(df.copy(), AUDITORES)
-        
-        # Asignar la columna 'Auditor' al DataFrame principal (df)
-        df['Auditor'] = auditor_asignado_serie
-        
-        # --- Reordenamiento de Columnas ---
-        
-        # Define las nuevas columnas a insertar
-        columnas_fijas = ['Prioritaria', 'Año de Investigación', 'Régimen', 'Conducta', 'Conducta Sancionable', 'Impuesto / Infracción', 'Normatividad', 'Puntos de Auditoria', 'Dirección Seccional', 'Beneficio Auditoria', 'Año Beneficio Auditoria','Fecha Firmeza', 'Lavado de Activos']
-        
-        # Crear la lista de columnas en el orden deseado
-        columnas_ordenadas_final = []
-        for col in df.columns:
-            if col not in columnas_fijas and col not in ['Conclusión', 'Auditor', 'Normatividad', 'Puntos de Auditoria']:
-                columnas_ordenadas_final.append(col)
-        
-        # Insertar las columnas fijas en su posición
-        temp_df = df[columnas_ordenadas_final]
-        
-        # Encontrar la posición para insertar las nuevas columnas
-        columnas_ordenadas_final_con_data = []
-        for col in df.columns:
-            if col not in ['Régimen', 'Conducta', 'Conducta Sancionable', 'Impuesto / Infracción', 'Normatividad', 'Puntos de Auditoria', 'Conclusión', 'Auditor']:
-                columnas_ordenadas_final_con_data.append(col)
+        if col == 'Año de Investigación':
+            columnas_ordenadas_final_con_data.extend(['Régimen', 'Conducta', 'Conducta Sancionable', 'Impuesto / Infracción'])
             
-            if col == 'Año de Investigación':
-                columnas_ordenadas_final_con_data.extend(['Régimen', 'Conducta', 'Conducta Sancionable', 'Impuesto / Infracción'])
-                
-            if col == 'Conclusión':
-                # Insertar Normatividad y Puntos de Auditoria después de Conclusión para la Hoja Resultados
-                columnas_ordenadas_final_con_data.append('Conclusión')
-                columnas_ordenadas_final_con_data.extend(['Normatividad', 'Puntos de Auditoria','Dirección Seccional', 'Beneficio Auditoria', 'Año Beneficio Auditoria', 'Fecha Firmeza', 'Lavado de Activos', 'Auditor'])
-        
-        # Eliminar duplicados si los hay y aplicar el orden
-        final_order = []
-        for item in columnas_ordenadas_final_con_data:
-            if item not in final_order:
-                final_order.append(item)
+        if col == 'Conclusión':
+            # Insertar Normatividad y Puntos de Auditoria después de Conclusión para la Hoja Resultados
+            columnas_ordenadas_final_con_data.append('Conclusión')
+            columnas_ordenadas_final_con_data.extend(['Normatividad', 'Puntos de Auditoria','Dirección Seccional', 'Beneficio Auditoria', 'Año Beneficio Auditoria', 'Fecha Firmeza', 'Lavado de Activos', 'Auditor'])
+    
+    # Eliminar duplicados si los hay y aplicar el orden
+    final_order = []
+    for item in columnas_ordenadas_final_con_data:
+        if item not in final_order:
+            final_order.append(item)
 
-        df = df[final_order]
+    df = df[final_order]
 
-        # --- Generación de código Python de estadísticas ---
-        codigo_estadisticas = generar_codigo_estadisticas(df)
-        
-        # --- Generación de las tablas de frecuencia (las estadísticas directas) ---
-        
-        # 1. Prioridad
-        df_prioridad = df['Prioritaria'].value_counts().rename_axis('Prioritaria').reset_index(name='Cantidad')
-        
-        # 2. Régimen
-        # Nota: Usamos solo el primer valor (antes del primer salto de línea) para el conteo de estadísticas.
-        df_regimen = df['Régimen'].apply(lambda x: x.split('\n')[0]).value_counts().rename_axis('Régimen').reset_index(name='Cantidad')
-        
-        # 3. Top Conducta Sancionable
-        df_conducta_top = df['Conducta Sancionable'].apply(lambda x: x.split('\n')[0]).value_counts().nlargest(10).rename_axis('Conducta Sancionable').reset_index(name='Cantidad')
+    # --- Generación de código Python de estadísticas ---
+    codigo_estadisticas = generar_codigo_estadisticas(df)
+    
+    # --- Generación de las tablas de frecuencia (las estadísticas directas) ---
+    
+    # 1. Prioridad
+    df_prioridad = df['Prioritaria'].value_counts().rename_axis('Prioritaria').reset_index(name='Cantidad')
+    
+    # 2. Régimen
+    # Nota: Usamos solo el primer valor (antes del primer salto de línea) para el conteo de estadísticas.
+    df_regimen = df['Régimen'].apply(lambda x: x.split('\n')[0]).value_counts().rename_axis('Régimen').reset_index(name='Cantidad')
+    
+    # 3. Top Conducta Sancionable
+    df_conducta_top = df['Conducta Sancionable'].apply(lambda x: x.split('\n')[0]).value_counts().nlargest(10).rename_axis('Conducta Sancionable').reset_index(name='Cantidad')
 
-        # 4. Años de Investigación (Desnormalizado)
-        años = df['Año de Investigación'].astype(str).str.split(', ').explode()
-        df_años = años[años != 'No determinado'].value_counts().rename_axis('Año Fiscal').reset_index(name='Cantidad').sort_values('Año Fiscal')
+    # 4. Años de Investigación (Desnormalizado)
+    años = df['Año de Investigación'].astype(str).str.split(', ').explode()
+    df_años = años[años != 'No determinado'].value_counts().rename_axis('Año Fiscal').reset_index(name='Cantidad').sort_values('Año Fiscal')
 
     
-        # 3: Generación de DataFrame para Hoja "Priorización" (Explosión por Año) ---
-        filas_priorizacion = []
+    # 3: Generación de DataFrame para Hoja "Priorización" (Explosión por Año) ---
+    filas_priorizacion = []
+    
+    # Columnas base que queremos en Priorización (mismas que Resultados)
+    cols_priorizacion = df.columns.tolist() 
+    
+    # Año actual para el cálculo de prioridad individual
+    # Si estamos en 2025, años <= 2023 son prioritarios.
+    anho_actual_sistema = datetime.now().year
+
+    for _, row in df.iterrows():
+        # Obtener el valor original y asegurar que sea string limpio
+        val_anio = row['Año de Investigación']
+        anios_investigacion_str = str(val_anio).strip() if pd.notna(val_anio) else ""
         
-        # Columnas base que queremos en Priorización (mismas que Resultados)
-        cols_priorizacion = df.columns.tolist() 
+        doc_limpio = limpiar_identificacion(row.get('Documento Denunciado', ''))
         
-        # Año actual para el cálculo de prioridad individual
-        # Si estamos en 2025, años <= 2023 son prioritarios.
-        anho_actual_sistema = datetime.now().year
-
-        for _, row in df.iterrows():
-            # Obtener el valor original y asegurar que sea string limpio
-            val_anio = row['Año de Investigación']
-            anios_investigacion_str = str(val_anio).strip() if pd.notna(val_anio) else ""
-            
-            doc_limpio = limpiar_identificacion(row.get('Documento Denunciado', ''))
-            
-            # --- Lógica robusta de separación de años ---
-            lista_anios = []
-            
-            # Validamos si es un valor que se deba dividir
-            if not anios_investigacion_str or anios_investigacion_str.lower() in ['no determinado', 'nan', 'none', '']:
-                # Si no hay año determinado, se deja una sola fila con el valor original
-                lista_anios = [anios_investigacion_str]
-            else:
-                # Separar por comas eliminando espacios vacíos
-                # Esto convierte "2019, 2020, 2021" en ["2019", "2020", "2021"]
-                lista_anios = [a.strip() for a in anios_investigacion_str.split(',') if a.strip()]
-            
-            # Seguridad: Si la lista quedó vacía por algún motivo, poner el valor original
-            if not lista_anios:
-                lista_anios = [anios_investigacion_str]
-
-            # --- Generar una fila INDEPENDIENTE por cada año encontrado ---
-            for anio_inv in lista_anios:
-                # Convertir a diccionario para crear una instancia totalmente nueva e independiente
-                nueva_fila = row.to_dict()
-                
-                # 1. SOBRESCRIBIR el Año de Investigación con el año individual
-                nueva_fila['Año de Investigación'] = anio_inv
-                
-                # 2. Recalcular PRIORIDAD para este año específico
-                # La prioridad global del caso puede ser 'Si', pero para un año reciente (ej. 2024) podría ser 'No'.
-                nueva_prioridad = 'No'
-                if anio_inv.isdigit():
-                    try:
-                        anio_num = int(anio_inv)
-                        # Regla: Si el año es 2 o más años anterior al actual, es prioritario
-                        if anio_num <= anho_actual_sistema - 2:
-                            nueva_prioridad = 'Si'
-                    except ValueError:
-                        pass # Si no es numérico, se queda en 'No'
-                
-                nueva_fila['Prioritaria'] = nueva_prioridad
-
-                # 3. Calcular Beneficio y Datos ESPECÍFICOS para este año puntual
-                ben_aud = 'NO'
-                anio_ben_aud = ''
-                firmeza = ''
-                dir_seccional = ''
-                
-                if doc_limpio and beneficio_map and doc_limpio in beneficio_map:
-                    # Verificar si este año específico (anio_inv) tiene beneficio
-                    clave_anio = str(anio_inv).strip()
-                    
-                    if clave_anio in beneficio_map[doc_limpio]:
-                        data_anio = beneficio_map[doc_limpio][clave_anio]
-                        
-                        ben_aud = 'SI'
-                        anio_ben_aud = data_anio['texto']
-                        firmeza = data_anio['firmeza']
-                        dir_seccional = data_anio.get('direccion', '') 
-                
-                # Asignar los valores específicos a la fila desagregada
-                nueva_fila['Beneficio Auditoria'] = ben_aud
-                nueva_fila['Año Beneficio Auditoria'] = anio_ben_aud
-                nueva_fila['Fecha Firmeza'] = firmeza
-                
-                # Limpiar dirección seccional si no hay beneficio en este año específico
-                if ben_aud == 'SI':
-                    nueva_fila['Dirección Seccional'] = dir_seccional
-                else:
-                    nueva_fila['Dirección Seccional'] = ''
-
-                filas_priorizacion.append(nueva_fila)
-                
-        # Crear DataFrame final desde la lista de filas expandidas
-        df_priorizacion = pd.DataFrame(filas_priorizacion)
+        # --- Lógica robusta de separación de años ---
+        lista_anios = []
         
-        # Asegurar que las columnas mantengan el orden correcto
-        # Si el DataFrame quedó vacío (caso raro), asegurarse de tener las columnas
-        if df_priorizacion.empty:
-             df_priorizacion = pd.DataFrame(columns=cols_priorizacion)
+        # Validamos si es un valor que se deba dividir
+        if not anios_investigacion_str or anios_investigacion_str.lower() in ['no determinado', 'nan', 'none', '']:
+            # Si no hay año determinado, se deja una sola fila con el valor original
+            lista_anios = [anios_investigacion_str]
         else:
-             df_priorizacion = df_priorizacion[cols_priorizacion]
-                    
-                    
-        # --- Creación del DataFrame de Estadísticas (Hoja 'Estadísticas') ---
+            # Separar por comas eliminando espacios vacíos
+            # Esto convierte "2019, 2020, 2021" en ["2019", "2020", "2021"]
+            lista_anios = [a.strip() for a in anios_investigacion_str.split(',') if a.strip()]
+        
+        # Seguridad: Si la lista quedó vacía por algún motivo, poner el valor original
+        if not lista_anios:
+            lista_anios = [anios_investigacion_str]
+
+        # --- Generar una fila INDEPENDIENTE por cada año encontrado ---
+        for anio_inv in lista_anios:
+            # Convertir a diccionario para crear una instancia totalmente nueva e independiente
+            nueva_fila = row.to_dict()
+            
+            # 1. SOBRESCRIBIR el Año de Investigación con el año individual
+            nueva_fila['Año de Investigación'] = anio_inv
+            
+            # 2. Recalcular PRIORIDAD para este año específico
+            # La prioridad global del caso puede ser 'Si', pero para un año reciente (ej. 2024) podría ser 'No'.
+            nueva_prioridad = 'No'
+            if anio_inv.isdigit():
+                try:
+                    anio_num = int(anio_inv)
+                    # Regla: Si el año es 2 o más años anterior al actual, es prioritario
+                    if anio_num <= anho_actual_sistema - 2:
+                        nueva_prioridad = 'Si'
+                except ValueError:
+                    pass # Si no es numérico, se queda en 'No'
+            
+            nueva_fila['Prioritaria'] = nueva_prioridad
+
+            # 3. Calcular Beneficio y Datos ESPECÍFICOS para este año puntual
+            ben_aud = 'NO'
+            anio_ben_aud = ''
+            firmeza = ''
+            dir_seccional = ''
+            
+            if doc_limpio and beneficio_map and doc_limpio in beneficio_map:
+                # Verificar si este año específico (anio_inv) tiene beneficio
+                clave_anio = str(anio_inv).strip()
                 
+                if clave_anio in beneficio_map[doc_limpio]:
+                    data_anio = beneficio_map[doc_limpio][clave_anio]
+                    
+                    ben_aud = 'SI'
+                    anio_ben_aud = data_anio['texto']
+                    firmeza = data_anio['firmeza']
+                    dir_seccional = data_anio.get('direccion', '') 
+            
+            # Asignar los valores específicos a la fila desagregada
+            nueva_fila['Beneficio Auditoria'] = ben_aud
+            nueva_fila['Año Beneficio Auditoria'] = anio_ben_aud
+            nueva_fila['Fecha Firmeza'] = firmeza
+            
+            # Limpiar dirección seccional si no hay beneficio en este año específico
+            if ben_aud == 'SI':
+                nueva_fila['Dirección Seccional'] = dir_seccional
+            else:
+                nueva_fila['Dirección Seccional'] = ''
+
+            filas_priorizacion.append(nueva_fila)
+            
+    # Crear DataFrame final desde la lista de filas expandidas
+    df_priorizacion = pd.DataFrame(filas_priorizacion)
+    
+    # Asegurar que las columnas mantengan el orden correcto
+    # Si el DataFrame quedó vacío (caso raro), asegurarse de tener las columnas
+    if df_priorizacion.empty:
+            df_priorizacion = pd.DataFrame(columns=cols_priorizacion)
+    else:
+            df_priorizacion = df_priorizacion[cols_priorizacion]
+                
+                
+    # --- Creación del DataFrame de Estadísticas (Hoja 'Estadísticas') ---
+    try:    
         # Inicializar el writer para escribir en el mismo archivo
         writer = pd.ExcelWriter(ruta_archivo_salida, engine='openpyxl')    
         # 1. Escribir la primera hoja con los resultados del procesamiento
         df.to_excel(writer, sheet_name='Resultados', index=False)
         df_priorizacion.to_excel(writer, sheet_name='Priorización', index=False)
-            
+        
         # 2. Escribir las Tablas de Frecuencia y el Código en la hoja 'Estadísticas'
-            
+        
         # Posición inicial para escribir
         fila_inicio = 0
-            
+        
         # Escribir Prioridad
-        writer.sheets['Estadísticas'] = pd.ExcelWriter(ruta_archivo_salida, engine='openpyxl').sheets.get('Estadísticas', None)
+        # Nota: Ajustamos para escribir correctamente en la hoja aunque no exista previamente
         df_prioridad.to_excel(writer, sheet_name='Estadísticas', startrow=fila_inicio, index=False)
         fila_inicio += len(df_prioridad) + 2
-            
+        
         # Escribir Régimen
         pd.DataFrame({'TITULO': ['Distribución por Régimen']}).to_excel(writer, sheet_name='Estadísticas', startrow=fila_inicio, index=False)
         fila_inicio += 1
@@ -2658,7 +1910,7 @@ def procesar_denuncias(ruta_archivo_entrada, ruta_archivo_salida, ruta_archivo_b
         fila_inicio += 1
         df_conducta_top.to_excel(writer, sheet_name='Estadísticas', startrow=fila_inicio, index=False)
         fila_inicio += len(df_conducta_top) + 2
-            
+        
         # Escribir Años Fiscales
         pd.DataFrame({'TITULO': ['Distribución por Año Fiscal']}).to_excel(writer, sheet_name='Estadísticas', startrow=fila_inicio, index=False)
         fila_inicio += 1
